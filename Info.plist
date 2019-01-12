@@ -14,5 +14,7 @@
 	<string>NSApplication</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.games</string>
 </dict>
 </plist>

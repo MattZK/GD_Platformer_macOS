@@ -60,6 +60,9 @@
     <Compile Include="Game1.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Managers\ScreenManager.cs" />
+    <Compile Include="Managers\InputManager.cs" />
+    <Compile Include="Managers\Base\Screen.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -84,6 +87,10 @@
       <Link>libSDL2-2.0.0.dylib</Link>
       <Kind>Static</Kind>
     </NativeReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Managers\" />
+    <Folder Include="Managers\Base\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
