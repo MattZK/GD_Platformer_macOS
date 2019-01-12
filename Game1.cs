@@ -42,6 +42,7 @@ namespace GDPlatformer.MacOS
     {
       spriteBatch = new SpriteBatch(GraphicsDevice);
       ScreenManager.Instance.LoadContent(Content);
+      base.LoadContent();
     }
 
     protected override void UnloadContent()

@@ -64,6 +64,7 @@
     <Compile Include="Managers\InputManager.cs" />
     <Compile Include="Managers\Base\Screen.cs" />
     <Compile Include="Screens\MenuScreen.cs" />
+    <Compile Include="Screens\GameScreen.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
