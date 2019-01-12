@@ -63,6 +63,7 @@
     <Compile Include="Managers\ScreenManager.cs" />
     <Compile Include="Managers\InputManager.cs" />
     <Compile Include="Managers\Base\Screen.cs" />
+    <Compile Include="Screens\MenuScreen.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -91,6 +92,7 @@
   <ItemGroup>
     <Folder Include="Managers\" />
     <Folder Include="Managers\Base\" />
+    <Folder Include="Screens\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />

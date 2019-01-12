@@ -1,5 +1,6 @@
 ﻿using System;
 using GDPlatformer.Managers.Base;
+using GDPlatformer.Screens;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -28,6 +29,7 @@ namespace GDPlatformer.Managers
 
     public ScreenManager() {
       Dimensions = new Vector2(1200, 800);
+      CurrentScreen = new MenuScreen();
     }
 
     public void LoadContent(ContentManager Content) {

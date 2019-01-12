@@ -9,8 +9,6 @@ namespace GDPlatformer.Managers.Base
   {
     protected ContentManager content;
 
-    public Screen() {}
-
     public virtual void LoadContent()
     {
       content = new ContentManager(ScreenManager.Instance.Content.ServiceProvider, "Content");
