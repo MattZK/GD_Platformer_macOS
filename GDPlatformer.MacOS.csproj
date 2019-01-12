@@ -68,6 +68,8 @@
     <Compile Include="Gameplay\Level.cs" />
     <Compile Include="Gameplay\Collision\ICollide.cs" />
     <Compile Include="Gameplay\Items\Block.cs" />
+    <Compile Include="Character\Base\Entity.cs" />
+    <Compile Include="Character\Player.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -100,6 +102,8 @@
     <Folder Include="Gameplay\" />
     <Folder Include="Gameplay\Collision\" />
     <Folder Include="Gameplay\Items\" />
+    <Folder Include="Character\" />
+    <Folder Include="Character\Base\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
