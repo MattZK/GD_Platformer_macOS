@@ -3,8 +3,8 @@ namespace GDPlatformer.Managers
 {
   public class InputManager
   {
+    #region Singleton Properties
     private static InputManager instance;
-
     public static InputManager Instance
     {
       get
@@ -16,5 +16,6 @@ namespace GDPlatformer.Managers
         return instance;
       }
     }
+    #endregion
   }
 }

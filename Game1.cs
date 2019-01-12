@@ -11,15 +11,20 @@ namespace GDPlatformer.MacOS
   /// </summary>
   public class Game1 : Game
   {
+    #region Properties
     GraphicsDeviceManager graphics;
     SpriteBatch spriteBatch;
+    #endregion
 
+    #region Constructor
     public Game1()
     {
       graphics = new GraphicsDeviceManager(this);
       Content.RootDirectory = "Content";
     }
+    #endregion
 
+    #region Game Methods
     /// <summary>
     /// Allows the game to perform any initialization it needs to before starting to run.
     /// This is where it can query for any required services and load any non-graphic
@@ -77,5 +82,6 @@ namespace GDPlatformer.MacOS
       spriteBatch.End();
       base.Draw(gameTime);
     }
+    #endregion
   }
 }
