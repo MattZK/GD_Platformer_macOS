@@ -9,6 +9,8 @@ namespace GDPlatformer.Character.Base
   public abstract class Entity
   {
     protected ContentManager content;
+    public Vector2 Position { get; set; }
+    public Vector2 Dimensions { get; set; }
 
     public virtual void LoadContent()
     {

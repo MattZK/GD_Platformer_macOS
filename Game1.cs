@@ -1,4 +1,5 @@
 ﻿using System;
+using GDPlatformer.Gameplay.Base;
 using GDPlatformer.Managers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,6 +15,7 @@ namespace GDPlatformer.MacOS
     #region Properties
     GraphicsDeviceManager graphics;
     SpriteBatch spriteBatch;
+    Camera camera;
     #endregion
 
     #region Constructor
@@ -33,10 +35,11 @@ namespace GDPlatformer.MacOS
     /// </summary>
     protected override void Initialize()
     {
+      base.Initialize();
       graphics.PreferredBackBufferWidth = (int)ScreenManager.Instance.Dimensions.X;
       graphics.PreferredBackBufferHeight = (int)ScreenManager.Instance.Dimensions.Y;
       graphics.ApplyChanges();
-      base.Initialize();
+      camera = new Camera(GraphicsDevice.Viewport);
     }
 
     /// <summary>
@@ -45,15 +48,15 @@ namespace GDPlatformer.MacOS
     /// </summary>
     protected override void LoadContent()
     {
+      base.LoadContent();
       spriteBatch = new SpriteBatch(GraphicsDevice);
       ScreenManager.Instance.LoadContent(Content);
-      base.LoadContent();
     }
 
     protected override void UnloadContent()
     {
-      ScreenManager.Instance.UnloadContent();
       base.UnloadContent();
+      ScreenManager.Instance.UnloadContent();
     }
 
     /// <summary>
@@ -66,9 +69,9 @@ namespace GDPlatformer.MacOS
       if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
         Exit();
 
+      base.Update(gameTime);
       ScreenManager.Instance.Update(gameTime);
       InputManager.Instance.Update();
-      base.Update(gameTime);
     }
 
     /// <summary>
@@ -77,11 +80,11 @@ namespace GDPlatformer.MacOS
     /// <param name="gameTime">Provides a snapshot of timing values.</param>
     protected override void Draw(GameTime gameTime)
     {
+      base.Draw(gameTime);
       graphics.GraphicsDevice.Clear(Color.Black);
-      spriteBatch.Begin();
+      spriteBatch.Begin(transformMatrix: camera.GetViewMatrix());
       ScreenManager.Instance.Draw(spriteBatch);
       spriteBatch.End();
-      base.Draw(gameTime);
     }
     #endregion
   }
