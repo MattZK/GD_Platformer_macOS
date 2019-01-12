@@ -28,7 +28,7 @@ namespace GDPlatformer.Managers
     }
 
     public ScreenManager() {
-      Dimensions = new Vector2(1200, 800);
+      Dimensions = new Vector2(1200, 700);
       CurrentScreen = new GameScreen();
     }
 
