@@ -67,6 +67,7 @@ namespace GDPlatformer.MacOS
         Exit();
 
       ScreenManager.Instance.Update(gameTime);
+      InputManager.Instance.Update();
       base.Update(gameTime);
     }
 
