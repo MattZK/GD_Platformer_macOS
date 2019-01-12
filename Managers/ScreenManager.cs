@@ -29,7 +29,7 @@ namespace GDPlatformer.Managers
 
     public ScreenManager() {
       Dimensions = new Vector2(1200, 800);
-      CurrentScreen = new MenuScreen();
+      CurrentScreen = new GameScreen();
     }
 
     public void LoadContent(ContentManager Content) {

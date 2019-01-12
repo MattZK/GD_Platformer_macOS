@@ -65,6 +65,9 @@
     <Compile Include="Managers\Base\Screen.cs" />
     <Compile Include="Screens\MenuScreen.cs" />
     <Compile Include="Screens\GameScreen.cs" />
+    <Compile Include="Gameplay\Level.cs" />
+    <Compile Include="Gameplay\Collision\ICollide.cs" />
+    <Compile Include="Gameplay\Items\Block.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -94,6 +97,9 @@
     <Folder Include="Managers\" />
     <Folder Include="Managers\Base\" />
     <Folder Include="Screens\" />
+    <Folder Include="Gameplay\" />
+    <Folder Include="Gameplay\Collision\" />
+    <Folder Include="Gameplay\Items\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />

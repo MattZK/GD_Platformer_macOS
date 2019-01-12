@@ -2,15 +2,17 @@
 using GDPlatformer.Managers;
 using GDPlatformer.Managers.Base;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace GDPlatformer.Screens
 {
   public class MenuScreen: Screen
   {
+    #region Properties
     SpriteFont arialFont;
+    #endregion
 
+    #region Game Methods
     public override void LoadContent()
     {
       base.LoadContent();
@@ -34,5 +36,6 @@ namespace GDPlatformer.Screens
       spriteBatch.DrawString(arialFont, "Menu Screen", position, Color.White, 0, origin, 4f, SpriteEffects.None, 0);
       base.Draw(spriteBatch);
     }
+    #endregion
   }
 }
