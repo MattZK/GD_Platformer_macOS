@@ -23,12 +23,18 @@ namespace GDPlatformer.Gameplay.Base
 
     public Matrix GetViewMatrix()
     {
-      if (_reference.Position.X > 2100 - _viewport.Width * .5f - _reference.Dimensions.X * .5f)
-        _position = new Vector2(2100 - _viewport.Width, 0);
-      else if (_reference.Position.X > _viewport.Width * .5f - _reference.Dimensions.X * .5f)
-        _position = new Vector2(_reference.Position.X + _reference.Dimensions.X * .5f - _viewport.Width * .5f, 0);
+      if(_reference != null) {
+        if (_reference.Position.X > 2100 - _viewport.Width * .5f - _reference.Dimensions.X * .5f)
+          _position = new Vector2(2100 - _viewport.Width, 0);
+        else if (_reference.Position.X > _viewport.Width * .5f - _reference.Dimensions.X * .5f)
+          _position = new Vector2(_reference.Position.X + _reference.Dimensions.X * .5f - _viewport.Width * .5f, 0);
+        else
+          _position = new Vector2(0, 0);
+      }
       else
+      {
         _position = new Vector2(0, 0);
+      }
       return Matrix.CreateTranslation(new Vector3(-_position, 0)) * Matrix.CreateRotationZ(0) * Matrix.CreateScale(1, 1, 1);
     }
   }
