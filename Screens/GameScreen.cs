@@ -10,8 +10,8 @@ namespace GDPlatformer.Screens
   public class GameScreen: Screen
   {
     #region Properties
-    Level level;
     public Player Player;
+    private Level level;
     #endregion
 
     #region Game Methods

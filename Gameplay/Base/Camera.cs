@@ -1,5 +1,5 @@
 ﻿using System;
-using GDPlatformer.Character.Base;
+using GDPlatformer.Character;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -9,14 +9,14 @@ namespace GDPlatformer.Gameplay.Base
   {
     private Viewport _viewport;
     private Vector2 _position { get; set; }
-    private Entity _reference { get; set; }
+    private Player _reference { get; set; }
 
     public Camera(Viewport viewport)
     {
       _viewport = viewport;
     }
 
-    public void SetReference(Entity reference)
+    public void SetReference(Player reference)
     {
       _reference = reference;
     }

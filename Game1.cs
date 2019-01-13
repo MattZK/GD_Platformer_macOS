@@ -1,6 +1,7 @@
 ﻿using System;
 using GDPlatformer.Gameplay.Base;
 using GDPlatformer.Managers;
+using GDPlatformer.Screens;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -16,6 +17,7 @@ namespace GDPlatformer.MacOS
     GraphicsDeviceManager graphics;
     SpriteBatch spriteBatch;
     Camera camera;
+    GameScreen gameScreen;
     #endregion
 
     #region Constructor
@@ -72,6 +74,12 @@ namespace GDPlatformer.MacOS
       base.Update(gameTime);
       ScreenManager.Instance.Update(gameTime);
       InputManager.Instance.Update();
+      // TODO: Fix Preformance
+      if (ScreenManager.Instance.CurrentScreen is GameScreen)
+      {
+        gameScreen = (GameScreen)ScreenManager.Instance.CurrentScreen;
+        camera.SetReference(gameScreen.Player);
+      }
     }
 
     /// <summary>
