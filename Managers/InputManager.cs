@@ -36,7 +36,7 @@ namespace GDPlatformer.Managers
       {
         Left = true;
       }
-      if (keyState.IsKeyUp(Keys.A))
+      else if (keyState.IsKeyUp(Keys.A))
       {
         Left = false;
       }
@@ -46,7 +46,7 @@ namespace GDPlatformer.Managers
       {
         Right = true;
       }
-      if (keyState.IsKeyUp(Keys.D))
+      else if (keyState.IsKeyUp(Keys.D))
       {
         Right = false;
       }
@@ -56,7 +56,7 @@ namespace GDPlatformer.Managers
       {
         Up = true;
       }
-      if (keyState.IsKeyUp(Keys.Space))
+      else if (keyState.IsKeyUp(Keys.Space))
       {
         Up = false;
       }

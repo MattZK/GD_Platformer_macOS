@@ -20,7 +20,7 @@ namespace GDPlatformer.Screens
       base.LoadContent();
       level = new Level();
       level.LoadContent(content);
-      Player = new Player(new Vector2(100, 546));
+      Player = new Player(new Vector2(100, 544));
       Player.LoadContent();
     }
 

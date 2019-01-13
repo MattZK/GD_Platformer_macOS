@@ -17,7 +17,7 @@ namespace GDPlatformer.Gameplay
     private List<List<int>> _level = new List<List<int>>() {
       new List<int>{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,3 },
       new List<int>{1 },
-      new List<int>{4,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,3,0,0,0,0,0 },
+      new List<int>{4,0,0,2,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,3,0,0,0,0,0 },
       new List<int>{4,0,0,0,0,0 },
       new List<int>{4,0,0,0,0,0 },
       new List<int>{4,1,1,1,1,1,6,0,0,7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,4 }
@@ -62,6 +62,8 @@ namespace GDPlatformer.Gameplay
               _blocks[x, y] = new Block(texture, new Vector2(y * 70, v), new Vector2(140, 350));
               break;
           }
+          if (_level[x][y] != 0)
+            CollisionManager.Instance.AddLevelCollider(_blocks[x, y]);
         }
       }
     }
