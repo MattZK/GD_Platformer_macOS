@@ -71,6 +71,7 @@
     <Compile Include="Character\Base\Entity.cs" />
     <Compile Include="Character\Player.cs" />
     <Compile Include="Gameplay\Base\Camera.cs" />
+    <Compile Include="Character\Animate\Animation.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -106,6 +107,7 @@
     <Folder Include="Character\" />
     <Folder Include="Character\Base\" />
     <Folder Include="Gameplay\Base\" />
+    <Folder Include="Character\Animate\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
