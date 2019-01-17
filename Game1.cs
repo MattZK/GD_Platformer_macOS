@@ -25,6 +25,7 @@ namespace GDPlatformer.MacOS
     {
       graphics = new GraphicsDeviceManager(this);
       Content.RootDirectory = "Content";
+      //IsFixedTimeStep = false;
     }
     #endregion
 

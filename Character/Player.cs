@@ -17,6 +17,7 @@ namespace GDPlatformer.Character
     public Vector2 Velocity = new Vector2(0, 0);
     private Texture2D texture;
     private Animation walkAnimation;
+    private float speed = 250f;
     #endregion
 
     public Player (Vector2 startPosition) {
@@ -40,25 +41,20 @@ namespace GDPlatformer.Character
       base.Update(gameTime);
 
       List<ICollide> levelColliders = CollisionManager.Instance.GetLevelColliders();
-      bool leftCollision = false;
 
-      if (InputManager.Instance.Left) {
-        Rectangle currentRectangle = GetCollisionRectangle(-5, 0);
-        foreach(ICollide levelCollider in levelColliders)
-        {
-          // TODO: Don't use intersects... use real x & y coding logic
-          if (currentRectangle.Intersects(levelCollider.GetCollisionRectangle()))
-          {
-            leftCollision = true;
-          }
-        }
-        if (!leftCollision)
-        Velocity.X = -5;
+      if (InputManager.Instance.Left)
+      {
+        Velocity.X = -speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
       }
       else if (InputManager.Instance.Right)
-        Velocity.X = 5;
+      {
+        Velocity.X = speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+      }
       else
+      {
         Velocity.X = 0;
+      }
+
 
       Position += Velocity;
 
@@ -75,6 +71,19 @@ namespace GDPlatformer.Character
     public Rectangle GetCollisionRectangle(int xOffset, int yOffset)
     {
       return new Rectangle((int)Position.X + 20 + xOffset, (int)Position.Y + yOffset, (int)Dimensions.X - 40 + xOffset, (int)Dimensions.Y + yOffset);
+    }
+
+    private bool checkCollision(ICollide collision)
+    {
+      Rectangle collider = collision.GetCollisionRectangle();
+      if (Position.X + Dimensions.X < collider.X ||
+                            Position.X > collider.X + collider.X ||
+                            Position.Y + Dimensions.Y < collider.Y ||
+                            Position.Y > collider.Y + collider.Y)
+      {
+        return true;
+      }
+      return false;
     }
     #endregion
   }
