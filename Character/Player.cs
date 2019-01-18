@@ -18,18 +18,24 @@ namespace GDPlatformer.Character
     private Texture2D texture;
     private Animation walkAnimation;
     private readonly float speed = 300f;
-    private Rectangle collisionRectangle;
     private KeyboardState keyboardState;
+
+    // Collision Boxes
+    private Rectangle moveLeftCollisionBox;
+    private Rectangle moveRightCollisionBox;
+    private Rectangle moveUpCollisionBox;
+    private Rectangle moveDownCollisionBox;
+
     // Movement
-    private bool allowVerticalMovement;
+    private bool allowLeftMovement;
+    private bool allowRightMovement;
     private bool isOnGround;
+    private bool isJumping;
     #endregion
 
     public Player (Vector2 startPosition) {
       Position = startPosition;
-      walkAnimation = new Animation();
-      walkAnimation.AddFrame(new Rectangle(0, 339, 68, 83));
-      walkAnimation.AddFrame(new Rectangle(0, 0, 70, 86));
+      loadAnimations();
     }
 
     #region Game Methods
@@ -45,75 +51,73 @@ namespace GDPlatformer.Character
     {
       base.Update(gameTime);
 
+      // FPS Counter
+      Console.WriteLine(1 / gameTime.ElapsedGameTime.TotalSeconds);
+
+      // Generated Collision Boxes
+      moveLeftCollisionBox = new Rectangle((int)(Position.X - speed * (float)gameTime.ElapsedGameTime.TotalSeconds), (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y - 1);
+      moveRightCollisionBox = new Rectangle((int)(Position.X + speed * (float)gameTime.ElapsedGameTime.TotalSeconds), (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y - 1);
+      moveUpCollisionBox = new Rectangle();
+      moveDownCollisionBox = new Rectangle();
+
       keyboardState = Keyboard.GetState();
-      allowVerticalMovement = true;
+      allowLeftMovement = true;
+      allowRightMovement = true;
+      isOnGround = false;
 
       // Get all levelColliders
       List<ICollide> levelColliders = CollisionManager.Instance.GetLevelColliders();
 
-      // Do Stuff
-      if(keyboardState.IsKeyDown(Keys.A))
-      {
-        Position.X -= speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-      }
-      else if (keyboardState.IsKeyDown(Keys.D))
-      {
-        Position.X += speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-      }
-
-      // Get Player Collision Rectangle
-      collisionRectangle = GetCollisionRectangle();
-
-      // Loop through levelColliders
+      // Check Collision Boxes against Player
       foreach (ICollide collider in levelColliders)
       {
-        if (CheckCollision(collider)) {
-          allowVerticalMovement = false;
-        }
+        if (CheckCollision(moveLeftCollisionBox, collider.GetCollisionRectangle()))
+          allowLeftMovement = false;
+        if (CheckCollision(moveRightCollisionBox, collider.GetCollisionRectangle()))
+          allowRightMovement = false;
       }
 
-      if(!allowVerticalMovement)
+      // Do Stuff
+      if (keyboardState.IsKeyDown(Keys.A))
       {
-        if (keyboardState.IsKeyDown(Keys.A))
-        {
-          Position.X += speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-        }
-        else if (keyboardState.IsKeyDown(Keys.D))
+        if(allowLeftMovement)
         {
           Position.X -= speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-        }
-      }
-      else
-      {
-        if (keyboardState.IsKeyDown(Keys.A) || keyboardState.IsKeyDown(Keys.D))
-        {
           walkAnimation.Update(gameTime);
         }
       }
+      else if (keyboardState.IsKeyDown(Keys.D))
+      {
+        if (allowRightMovement)
+        {
+          Position.X += speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+          walkAnimation.Update(gameTime);
+        }
+      }
+    }
+
+    private bool CheckCollision(Rectangle boundBox, Rectangle colliderBox)
+    {
+      if (boundBox.Right < colliderBox.Left ||
+          boundBox.Left > colliderBox.Right ||
+          boundBox.Bottom < colliderBox.Top ||
+          boundBox.Top > colliderBox.Bottom)
+      {
+        return false;
+      }
+      return true;
+    }
+
+    private void loadAnimations() {
+      walkAnimation = new Animation();
+      walkAnimation.AddFrame(new Rectangle(0, 339, 68, 83));
+      walkAnimation.AddFrame(new Rectangle(0, 0, 70, 86));
     }
 
     public override void Draw(SpriteBatch spriteBatch)
     {
       base.Draw(spriteBatch);
       spriteBatch.Draw(texture, Position, walkAnimation.CurrentFrame.SourceRectangle, Color.White);
-    }
-
-    private Rectangle GetCollisionRectangle()
-    {
-      return new Rectangle((int)Position.X, (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y - 1);
-    }
-
-    private bool CheckCollision(ICollide collider)
-    {
-      Rectangle colliderRect = collider.GetCollisionRectangle();
-      if (collisionRectangle.Right < colliderRect.Left ||
-          collisionRectangle.Left > colliderRect.Right ||
-          collisionRectangle.Bottom < colliderRect.Top ||
-          collisionRectangle.Top > colliderRect.Bottom)
-      {
-        return false;
-      }
-      return true;
     }
     #endregion
   }
