@@ -78,21 +78,15 @@ namespace GDPlatformer.Character
       }
 
       // Do Stuff
-      if (keyboardState.IsKeyDown(Keys.A))
+      if (keyboardState.IsKeyDown(Keys.A) && allowLeftMovement)
       {
-        if(allowLeftMovement)
-        {
-          Position.X -= speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-          walkAnimation.Update(gameTime);
-        }
+        Position.X -= speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        walkAnimation.Update(gameTime);
       }
-      else if (keyboardState.IsKeyDown(Keys.D))
+      else if (keyboardState.IsKeyDown(Keys.D) && allowRightMovement)
       {
-        if (allowRightMovement)
-        {
-          Position.X += speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-          walkAnimation.Update(gameTime);
-        }
+        Position.X += speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        walkAnimation.Update(gameTime);
       }
     }
 
