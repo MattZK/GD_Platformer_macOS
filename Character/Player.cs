@@ -20,7 +20,9 @@ namespace GDPlatformer.Character
     private readonly float speed = 300f;
     private Rectangle collisionRectangle;
     private KeyboardState keyboardState;
-    private bool allowMove;
+    // Movement
+    private bool allowVerticalMovement;
+    private bool isOnGround;
     #endregion
 
     public Player (Vector2 startPosition) {
@@ -44,7 +46,7 @@ namespace GDPlatformer.Character
       base.Update(gameTime);
 
       keyboardState = Keyboard.GetState();
-      allowMove = true;
+      allowVerticalMovement = true;
 
       // Get all levelColliders
       List<ICollide> levelColliders = CollisionManager.Instance.GetLevelColliders();
@@ -66,11 +68,11 @@ namespace GDPlatformer.Character
       foreach (ICollide collider in levelColliders)
       {
         if (CheckCollision(collider)) {
-          allowMove = false;
+          allowVerticalMovement = false;
         }
       }
 
-      if(!allowMove)
+      if(!allowVerticalMovement)
       {
         if (keyboardState.IsKeyDown(Keys.A))
         {
