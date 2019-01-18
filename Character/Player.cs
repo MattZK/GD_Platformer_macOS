@@ -98,7 +98,7 @@ namespace GDPlatformer.Character
 
     private Rectangle GetCollisionRectangle()
     {
-      return new Rectangle((int)Position.X, (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y);
+      return new Rectangle((int)Position.X, (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y - 1);
     }
 
     private bool CheckCollision(ICollide collider)
