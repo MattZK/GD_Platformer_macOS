@@ -5,6 +5,7 @@ using GDPlatformer.Character.Base;
 using GDPlatformer.Gameplay.Collision;
 using GDPlatformer.Managers;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace GDPlatformer.Character
@@ -13,11 +14,13 @@ namespace GDPlatformer.Character
   {
     #region Properties
     public new Vector2 Position;
-    public new Vector2 Dimensions = new Vector2(70, 86);
-    public Vector2 Velocity = new Vector2(0, 0);
+    public new readonly Vector2 Dimensions = new Vector2(70, 86);
     private Texture2D texture;
     private Animation walkAnimation;
-    private float speed = 250f;
+    private readonly float speed = 300f;
+    private Rectangle collisionRectangle;
+    private KeyboardState keyboardState;
+    private bool allowMove;
     #endregion
 
     public Player (Vector2 startPosition) {
@@ -40,26 +43,51 @@ namespace GDPlatformer.Character
     {
       base.Update(gameTime);
 
+      keyboardState = Keyboard.GetState();
+      allowMove = true;
+
+      // Get all levelColliders
       List<ICollide> levelColliders = CollisionManager.Instance.GetLevelColliders();
 
-      if (InputManager.Instance.Left)
+      // Do Stuff
+      if(keyboardState.IsKeyDown(Keys.A))
       {
-        Velocity.X = -speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        Position.X -= speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
       }
-      else if (InputManager.Instance.Right)
+      else if (keyboardState.IsKeyDown(Keys.D))
       {
-        Velocity.X = speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        Position.X += speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+      }
+
+      // Get Player Collision Rectangle
+      collisionRectangle = GetCollisionRectangle();
+
+      // Loop through levelColliders
+      foreach (ICollide collider in levelColliders)
+      {
+        if (CheckCollision(collider)) {
+          allowMove = false;
+        }
+      }
+
+      if(!allowMove)
+      {
+        if (keyboardState.IsKeyDown(Keys.A))
+        {
+          Position.X += speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        }
+        else if (keyboardState.IsKeyDown(Keys.D))
+        {
+          Position.X -= speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        }
       }
       else
       {
-        Velocity.X = 0;
+        if (keyboardState.IsKeyDown(Keys.A) || keyboardState.IsKeyDown(Keys.D))
+        {
+          walkAnimation.Update(gameTime);
+        }
       }
-
-
-      Position += Velocity;
-
-      if ((int)Velocity.X != 0)
-        walkAnimation.Update(gameTime);
     }
 
     public override void Draw(SpriteBatch spriteBatch)
@@ -68,22 +96,22 @@ namespace GDPlatformer.Character
       spriteBatch.Draw(texture, Position, walkAnimation.CurrentFrame.SourceRectangle, Color.White);
     }
 
-    public Rectangle GetCollisionRectangle(int xOffset, int yOffset)
+    private Rectangle GetCollisionRectangle()
     {
-      return new Rectangle((int)Position.X + 20 + xOffset, (int)Position.Y + yOffset, (int)Dimensions.X - 40 + xOffset, (int)Dimensions.Y + yOffset);
+      return new Rectangle((int)Position.X, (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y);
     }
 
-    private bool checkCollision(ICollide collision)
+    private bool CheckCollision(ICollide collider)
     {
-      Rectangle collider = collision.GetCollisionRectangle();
-      if (Position.X + Dimensions.X < collider.X ||
-                            Position.X > collider.X + collider.X ||
-                            Position.Y + Dimensions.Y < collider.Y ||
-                            Position.Y > collider.Y + collider.Y)
+      Rectangle colliderRect = collider.GetCollisionRectangle();
+      if (collisionRectangle.Right < colliderRect.Left ||
+          collisionRectangle.Left > colliderRect.Right ||
+          collisionRectangle.Bottom < colliderRect.Top ||
+          collisionRectangle.Top > colliderRect.Bottom)
       {
-        return true;
+        return false;
       }
-      return false;
+      return true;
     }
     #endregion
   }
