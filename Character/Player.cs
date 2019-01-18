@@ -29,13 +29,15 @@ namespace GDPlatformer.Character
     // Movement
     private bool allowLeftMovement;
     private bool allowRightMovement;
+    private bool allowUpMovement;
+    private bool allowDownMovement;
     private bool isOnGround;
     private bool isJumping;
     #endregion
 
     public Player (Vector2 startPosition) {
       Position = startPosition;
-      loadAnimations();
+      LoadAnimations();
     }
 
     #region Game Methods
@@ -58,11 +60,14 @@ namespace GDPlatformer.Character
       moveLeftCollisionBox = new Rectangle((int)(Position.X - speed * (float)gameTime.ElapsedGameTime.TotalSeconds), (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y - 1);
       moveRightCollisionBox = new Rectangle((int)(Position.X + speed * (float)gameTime.ElapsedGameTime.TotalSeconds), (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y - 1);
       moveUpCollisionBox = new Rectangle();
-      moveDownCollisionBox = new Rectangle();
+      moveDownCollisionBox = new Rectangle((int)Position.X, (int)(Position.Y + speed * (float)gameTime.ElapsedGameTime.TotalSeconds), (int)Dimensions.X, (int)Dimensions.Y);
 
+      // Set defaults
       keyboardState = Keyboard.GetState();
       allowLeftMovement = true;
       allowRightMovement = true;
+      allowDownMovement = true;
+      allowUpMovement = true;
       isOnGround = false;
 
       // Get all levelColliders
@@ -75,9 +80,11 @@ namespace GDPlatformer.Character
           allowLeftMovement = false;
         if (CheckCollision(moveRightCollisionBox, collider.GetCollisionRectangle()))
           allowRightMovement = false;
+        if (CheckCollision(moveDownCollisionBox, collider.GetCollisionRectangle()))
+          allowDownMovement = false;
       }
 
-      // Do Stuff
+      // Horizontal Movement
       if (keyboardState.IsKeyDown(Keys.A) && allowLeftMovement)
       {
         Position.X -= speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -87,6 +94,12 @@ namespace GDPlatformer.Character
       {
         Position.X += speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
         walkAnimation.Update(gameTime);
+      }
+
+      // Vertical Movement
+      if (allowDownMovement)
+      {
+        Position.Y += speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
       }
     }
 
@@ -102,7 +115,7 @@ namespace GDPlatformer.Character
       return true;
     }
 
-    private void loadAnimations() {
+    private void LoadAnimations() {
       walkAnimation = new Animation();
       walkAnimation.AddFrame(new Rectangle(0, 339, 68, 83));
       walkAnimation.AddFrame(new Rectangle(0, 0, 70, 86));
