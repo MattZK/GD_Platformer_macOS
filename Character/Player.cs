@@ -18,11 +18,12 @@ namespace GDPlatformer.Character
     private Texture2D texture;
     private Animation walkAnimation;
     private KeyboardState keyboardState;
+    private float elapsedGameTimeSeconds;
 
     // Speed & Velocity
     private readonly float speed = 300f;
-    private readonly float gravity = 2f;
-    private float verticalVelocity = 0f;
+    private readonly float gravity = 200f;
+    private Vector2 velocity = new Vector2(300f, 0f);
 
     // Collision Boxes
     private Rectangle moveLeftCollisionBox;
@@ -59,77 +60,91 @@ namespace GDPlatformer.Character
       // FPS Counter
       //Console.WriteLine(1 / gameTime.ElapsedGameTime.TotalSeconds);
 
-      // Generated Collision Boxes
-      moveLeftCollisionBox = new Rectangle((int)(Position.X - speed * (float)gameTime.ElapsedGameTime.TotalSeconds), (int)Position.Y + 1, (int)Dimensions.X, (int)Dimensions.Y - 2);
-      moveRightCollisionBox = new Rectangle((int)(Position.X + speed * (float)gameTime.ElapsedGameTime.TotalSeconds), (int)Position.Y + 1, (int)Dimensions.X, (int)Dimensions.Y - 2);
-      moveUpCollisionBox = new Rectangle((int)Position.X, (int)(Position.Y - (verticalVelocity + gravity * (float)gameTime.ElapsedGameTime.TotalSeconds) + 2), (int)Dimensions.X, (int)Dimensions.Y);
-      moveDownCollisionBox = new Rectangle((int)Position.X, (int)(Position.Y + (verticalVelocity + gravity * (float)gameTime.ElapsedGameTime.TotalSeconds)), (int)Dimensions.X, (int)Dimensions.Y);
+      // Apply gravity to the vertical velocity
+      if (velocity.Y != 0)
+        velocity.Y += gravity * elapsedGameTimeSeconds;
 
-      // Set defaults
+      velocity.X = speed * elapsedGameTimeSeconds;
+
+      // Get Values & States
+      List<ICollide> levelColliders = CollisionManager.Instance.GetLevelColliders();
+      elapsedGameTimeSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
       keyboardState = Keyboard.GetState();
+
+      // Generated Collision Boxes
+      moveLeftCollisionBox = new Rectangle((int)(Position.X - velocity.X), (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y);
+      moveRightCollisionBox = new Rectangle((int)(Position.X + velocity.X), (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y);
+      moveUpCollisionBox = new Rectangle((int)Position.X, (int)(Position.Y - velocity.Y), (int)Dimensions.X, (int)Dimensions.Y);
+      moveDownCollisionBox = new Rectangle((int)Position.X, (int)(Position.Y + velocity.Y), (int)Dimensions.X, (int)Dimensions.Y);
+
+      // Set default values
       allowLeftMovement = true;
       allowRightMovement = true;
       allowDownMovement = true;
       allowUpMovement = true;
 
-      // Get all levelColliders
-      List<ICollide> levelColliders = CollisionManager.Instance.GetLevelColliders();
-
       // Check Collision Boxes against Player
       foreach (ICollide collider in levelColliders)
       {
-        allowLeftMovement &= !CheckCollision(moveLeftCollisionBox, collider.GetCollisionRectangle());
-        allowRightMovement &= !CheckCollision(moveRightCollisionBox, collider.GetCollisionRectangle());
-        allowDownMovement &= !CheckCollision(moveDownCollisionBox, collider.GetCollisionRectangle());
-        // TODO: Something is wrong here
-        allowUpMovement &= !CheckCollision(moveUpCollisionBox, collider.GetCollisionRectangle());
+        allowLeftMovement |= CheckCollision(moveLeftCollisionBox, collider.GetCollisionRectangle());
+        allowRightMovement |= CheckCollision(moveRightCollisionBox, collider.GetCollisionRectangle());
+        allowDownMovement |= CheckCollision(moveDownCollisionBox, collider.GetCollisionRectangle());
+        allowUpMovement |= CheckCollision(moveUpCollisionBox, collider.GetCollisionRectangle());
       }
 
-      // Apply gravity to the vertical velocity
-      if (isJumping && allowDownMovement)
-        verticalVelocity += gravity * (float)gameTime.ElapsedGameTime.TotalSeconds;
-
+      #region Horizontal Movement
       // Horizontal Movement
       if (keyboardState.IsKeyDown(Keys.A) && allowLeftMovement)
       {
-        Position.X -= speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        Position.X -= speed * elapsedGameTimeSeconds;
         walkAnimation.Update(gameTime);
       }
       else if (keyboardState.IsKeyDown(Keys.D) && allowRightMovement)
       {
-        Position.X += speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        Position.X += speed * elapsedGameTimeSeconds;
         walkAnimation.Update(gameTime);
       }
+      #endregion
 
-      /// Vertical Movement
+      #region Vertical Movement
       // Jump
-      if (keyboardState.IsKeyDown(Keys.Space) && !isJumping)
-      {
+      if (allowDownMovement)
         isJumping = true;
-        verticalVelocity = -1.2f;
-      }
 
-      // Falling Gravity
-      if (allowDownMovement && !isJumping)
-      {
-        isJumping = true;
-        verticalVelocity = 0f;
-      }
+      if (isJumping)
+      Position.Y += velocity.Y;
+      #endregion
 
-      // Top Detection
-      if (!allowUpMovement)
-      {
-        //verticalVelocity = 0f;
-      }
+      #region Previous Vertical Movement
+      ///// Vertical Movement
 
-      // Bottom Detection
-      if (verticalVelocity > 0 && !allowDownMovement)
-      {
-        isJumping = false;
-        verticalVelocity = 0f;
-      }
+      //// Jump
+      //if (keyboardState.IsKeyDown(Keys.Space) && !isJumping)
+      //{
+      //  isJumping = true;
+      //  verticalVelocity = -800f;
+      //}
 
-      Position.Y += verticalVelocity;
+      //// Falling Gravity
+      //if (allowDownMovement && !isJumping)
+      //{
+      //  isJumping = true;
+      //  verticalVelocity = 0f;
+      //}
+
+      //// Top Detection
+      //if (!allowUpMovement)
+      //{
+      //  verticalVelocity = 0f;
+      //}
+
+      //// Bottom Detection
+      //if (verticalVelocity > 0 && !allowDownMovement)
+      //{
+      //  isJumping = false;
+      //  verticalVelocity = 0f;
+      //}
+      #endregion
     }
 
     public override void Draw(SpriteBatch spriteBatch)
@@ -142,14 +157,19 @@ namespace GDPlatformer.Character
     #region Other Methods
     private bool CheckCollision(Rectangle boundBox, Rectangle colliderBox)
     {
-      if (boundBox.Right < colliderBox.Left ||
-          boundBox.Left > colliderBox.Right ||
-          boundBox.Bottom < colliderBox.Top ||
-          boundBox.Top > colliderBox.Bottom)
+      if (boundBox.Intersects(colliderBox))
       {
-        return false;
+        return true;
       }
-      return true;
+      return false;
+      //if (boundBox.Right < colliderBox.Left ||
+      //    boundBox.Left > colliderBox.Right ||
+      //    boundBox.Bottom < colliderBox.Top ||
+      //    boundBox.Top > colliderBox.Bottom)
+      //{
+      //  return false;
+      //}
+      //return true;
     }
 
     private void LoadAnimations()
