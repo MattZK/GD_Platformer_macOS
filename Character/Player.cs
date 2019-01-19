@@ -145,14 +145,6 @@ namespace GDPlatformer.Character
         return true;
       }
       return false;
-      //if (boundBox.Right < colliderBox.Left ||
-      //    boundBox.Left > colliderBox.Right ||
-      //    boundBox.Bottom < colliderBox.Top ||
-      //    boundBox.Top > colliderBox.Bottom)
-      //{
-      //  return false;
-      //}
-      //return true;
     }
 
     private void LoadAnimations()
