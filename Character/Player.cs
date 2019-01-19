@@ -70,7 +70,6 @@ namespace GDPlatformer.Character
       // Apply gravity to the vertical velocity
       if (isInAir)
         velocity.Y += gravity * elapsedGameTimeSeconds;
-
       velocity.X = speed * elapsedGameTimeSeconds;
 
       // Generated Collision Boxes
@@ -122,11 +121,18 @@ namespace GDPlatformer.Character
         velocity.Y = -1.2f;
       }
 
+      // Ceiling Detection
+      if (!allowUpMovement)
+      {
+        velocity.Y = 0f;
+        Position.Y += 1;
+      }
+
       // Apply Gravity
       if (isInAir)
         Position.Y += velocity.Y;
       else
-        velocity.Y = 0;
+        velocity.Y = 0f;
       #endregion
     }
 
