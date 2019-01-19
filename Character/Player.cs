@@ -13,17 +13,17 @@ namespace GDPlatformer.Character
   public class Player : Entity
   {
     #region Properties
-    public new Vector2 Position;
-    public new readonly Vector2 Dimensions = new Vector2(70, 86);
     private Texture2D texture;
     private Animation walkAnimation;
     private KeyboardState keyboardState;
     private float elapsedGameTimeSeconds;
 
-    // Speed & Velocity
+    // Position, Speed & Velocity
+    public new Vector2 Position;
+    public new readonly Vector2 Dimensions = new Vector2(70, 86);
     private readonly float speed = 300f;
-    private readonly float gravity = 200f;
-    private Vector2 velocity = new Vector2(300f, 0f);
+    private readonly float gravity = 2f;
+    private Vector2 velocity = new Vector2(0f, 0f);
 
     // Collision Boxes
     private Rectangle moveLeftCollisionBox;
@@ -36,13 +36,15 @@ namespace GDPlatformer.Character
     private bool allowRightMovement;
     private bool allowUpMovement;
     private bool allowDownMovement;
-    private bool isJumping;
+    private bool isInAir;
     #endregion
 
+    #region Constructor
     public Player (Vector2 startPosition) {
       Position = startPosition;
       LoadAnimations();
     }
+    #endregion
 
     #region Game Methods
     public override void LoadContent()
@@ -60,16 +62,16 @@ namespace GDPlatformer.Character
       // FPS Counter
       //Console.WriteLine(1 / gameTime.ElapsedGameTime.TotalSeconds);
 
-      // Apply gravity to the vertical velocity
-      if (velocity.Y != 0)
-        velocity.Y += gravity * elapsedGameTimeSeconds;
-
-      velocity.X = speed * elapsedGameTimeSeconds;
-
       // Get Values & States
       List<ICollide> levelColliders = CollisionManager.Instance.GetLevelColliders();
       elapsedGameTimeSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
       keyboardState = Keyboard.GetState();
+
+      // Apply gravity to the vertical velocity
+      if (isInAir)
+        velocity.Y += gravity * elapsedGameTimeSeconds;
+
+      velocity.X = speed * elapsedGameTimeSeconds;
 
       // Generated Collision Boxes
       moveLeftCollisionBox = new Rectangle((int)(Position.X - velocity.X), (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y);
@@ -86,10 +88,10 @@ namespace GDPlatformer.Character
       // Check Collision Boxes against Player
       foreach (ICollide collider in levelColliders)
       {
-        allowLeftMovement |= CheckCollision(moveLeftCollisionBox, collider.GetCollisionRectangle());
-        allowRightMovement |= CheckCollision(moveRightCollisionBox, collider.GetCollisionRectangle());
-        allowDownMovement |= CheckCollision(moveDownCollisionBox, collider.GetCollisionRectangle());
-        allowUpMovement |= CheckCollision(moveUpCollisionBox, collider.GetCollisionRectangle());
+        allowLeftMovement &= !CheckCollision(moveLeftCollisionBox, collider.GetCollisionRectangle());
+        allowRightMovement &= !CheckCollision(moveRightCollisionBox, collider.GetCollisionRectangle());
+        allowDownMovement &= !CheckCollision(moveDownCollisionBox, collider.GetCollisionRectangle());
+        allowUpMovement &= !CheckCollision(moveUpCollisionBox, collider.GetCollisionRectangle());
       }
 
       #region Horizontal Movement
@@ -107,43 +109,24 @@ namespace GDPlatformer.Character
       #endregion
 
       #region Vertical Movement
-      // Jump
+      // isInAir
       if (allowDownMovement)
-        isJumping = true;
+        isInAir = true;
+      else
+        isInAir = false;
 
-      if (isJumping)
-      Position.Y += velocity.Y;
-      #endregion
+      // Jump
+      if (keyboardState.IsKeyDown(Keys.Space) && !isInAir)
+      {
+        isInAir = true;
+        velocity.Y = -1.2f;
+      }
 
-      #region Previous Vertical Movement
-      ///// Vertical Movement
-
-      //// Jump
-      //if (keyboardState.IsKeyDown(Keys.Space) && !isJumping)
-      //{
-      //  isJumping = true;
-      //  verticalVelocity = -800f;
-      //}
-
-      //// Falling Gravity
-      //if (allowDownMovement && !isJumping)
-      //{
-      //  isJumping = true;
-      //  verticalVelocity = 0f;
-      //}
-
-      //// Top Detection
-      //if (!allowUpMovement)
-      //{
-      //  verticalVelocity = 0f;
-      //}
-
-      //// Bottom Detection
-      //if (verticalVelocity > 0 && !allowDownMovement)
-      //{
-      //  isJumping = false;
-      //  verticalVelocity = 0f;
-      //}
+      // Apply Gravity
+      if (isInAir)
+        Position.Y += velocity.Y;
+      else
+        velocity.Y = 0;
       #endregion
     }
 
