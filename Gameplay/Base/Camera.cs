@@ -23,13 +23,16 @@ namespace GDPlatformer.Gameplay.Base
 
     public Matrix GetViewMatrix()
     {
+      float y = 0;
       if(_reference != null) {
+        if (_reference.Position.Y < 100)
+          y = _reference.Position.Y - 100;
         if (_reference.Position.X > 2100 - _viewport.Width * .5f - _reference.Dimensions.X * .5f)
-          _position = new Vector2(2100 - _viewport.Width, 0);
+          _position = new Vector2(2100 - _viewport.Width, y);
         else if (_reference.Position.X > _viewport.Width * .5f - _reference.Dimensions.X * .5f)
-          _position = new Vector2(_reference.Position.X + _reference.Dimensions.X * .5f - _viewport.Width * .5f, 0);
+          _position = new Vector2(_reference.Position.X + _reference.Dimensions.X * .5f - _viewport.Width * .5f, y);
         else
-          _position = new Vector2(0, 0);
+          _position = new Vector2(0, y);
       }
       else
       {

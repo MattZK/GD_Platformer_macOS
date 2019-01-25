@@ -18,6 +18,7 @@ namespace GDPlatformer.MacOS
     SpriteBatch spriteBatch;
     Camera camera;
     GameScreen gameScreen;
+    Color background;
     #endregion
 
     #region Constructor
@@ -43,6 +44,7 @@ namespace GDPlatformer.MacOS
       graphics.PreferredBackBufferHeight = (int)ScreenManager.Instance.Dimensions.Y;
       graphics.ApplyChanges();
       camera = new Camera(GraphicsDevice.Viewport);
+      background = new Color(208, 244, 247);
     }
 
     /// <summary>
@@ -90,7 +92,7 @@ namespace GDPlatformer.MacOS
     protected override void Draw(GameTime gameTime)
     {
       base.Draw(gameTime);
-      graphics.GraphicsDevice.Clear(Color.Black);
+      graphics.GraphicsDevice.Clear(background);
       spriteBatch.Begin(transformMatrix: camera.GetViewMatrix());
       ScreenManager.Instance.Draw(spriteBatch);
       spriteBatch.End();
