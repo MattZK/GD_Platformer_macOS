@@ -13,7 +13,8 @@ namespace GDPlatformer.Character
   public class Player : Entity
   {
     #region Properties
-    private Texture2D texture;
+    private Texture2D playerTexture;
+    private Texture2D hudTexture;
     private Animation walkAnimation;
     private KeyboardState keyboardState;
     private float elapsedGameTimeSeconds;
@@ -24,6 +25,7 @@ namespace GDPlatformer.Character
     private readonly float speed = 300f;
     private readonly float gravity = 2f;
     private Vector2 velocity = new Vector2(0f, 0f);
+    private int health = 3;
 
     // Collision Boxes
     private Rectangle moveLeftCollisionBox;
@@ -38,12 +40,14 @@ namespace GDPlatformer.Character
     private bool allowDownMovement;
     private bool isInAir;
     private bool isGoingLeft;
+
+    // Debug
+    private readonly bool DEBUG = false;
     #endregion
 
     #region Constructor
     public Player (Vector2 startPosition) {
       Position = startPosition;
-      LoadAnimations();
     }
     #endregion
 
@@ -51,7 +55,8 @@ namespace GDPlatformer.Character
     public override void LoadContent()
     {
       base.LoadContent();
-      texture = content.Load<Texture2D>("Character/alien_yellow");
+      LoadTextures();
+      LoadAnimations();
     }
 
     public override void UnloadContent() => base.UnloadContent();
@@ -59,26 +64,64 @@ namespace GDPlatformer.Character
     public override void Update(GameTime gameTime)
     {
       base.Update(gameTime);
-
-      // FPS Counter
-      //Console.WriteLine(1 / gameTime.ElapsedGameTime.TotalSeconds);
+      ShowFPSCounter(gameTime);
 
       // Get Values & States
-      List<ICollide> levelColliders = CollisionManager.Instance.GetLevelColliders();
-      List<ICollide> enemyColliders = CollisionManager.Instance.GetEnemyColliders();
       elapsedGameTimeSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
       keyboardState = Keyboard.GetState();
 
-      // Apply gravity to the vertical velocity
-      if (isInAir)
-        velocity.Y += gravity * elapsedGameTimeSeconds;
-      velocity.X = speed * elapsedGameTimeSeconds;
+      CalculateVelocity();
 
+      CheckMoveCollisions();
+      CheckEnemyCollisions();
+
+      ApplyHorizontalMovement(gameTime);
+      ApplyVerticalMovement(gameTime);
+    }
+
+    public override void Draw(SpriteBatch spriteBatch)
+    {
+      base.Draw(spriteBatch);
+      if (!isGoingLeft)
+        spriteBatch.Draw(playerTexture, new Rectangle((int)Position.X, (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y), walkAnimation.CurrentFrame.SourceRectangle, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 0f);
+      else
+        spriteBatch.Draw(playerTexture, new Rectangle((int)Position.X, (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y), walkAnimation.CurrentFrame.SourceRectangle, Color.White, 0f, Vector2.Zero, SpriteEffects.FlipHorizontally, 0f);
+    }
+    #endregion
+
+    #region Load Methods
+    private void LoadTextures()
+    {
+      playerTexture = content.Load<Texture2D>("Character/alien_yellow");
+      hudTexture = content.Load<Texture2D>("Items/hud");
+    }
+    private void LoadAnimations()
+    {
+      walkAnimation = new Animation();
+      walkAnimation.AddFrame(new Rectangle(0, 339, 68, 83));
+      walkAnimation.AddFrame(new Rectangle(0, 0, 70, 86));
+    }
+    #endregion
+
+    #region Collision Methods
+    private bool CheckCollision(Rectangle boundBox, Rectangle colliderBox)
+    {
+      if (boundBox.Intersects(colliderBox))
+      {
+        return true;
+      }
+      return false;
+    }
+    private void CheckMoveCollisions()
+    {
       // Generated Collision Boxes
       moveLeftCollisionBox = new Rectangle((int)(Position.X - velocity.X), (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y);
       moveRightCollisionBox = new Rectangle((int)(Position.X + velocity.X), (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y);
       moveUpCollisionBox = new Rectangle((int)Position.X, (int)(Position.Y - velocity.Y), (int)Dimensions.X, (int)Dimensions.Y);
       moveDownCollisionBox = new Rectangle((int)Position.X, (int)(Position.Y + velocity.Y), (int)Dimensions.X, (int)Dimensions.Y);
+
+      // Get Level Colliders
+      List<ICollide> levelColliders = CollisionManager.Instance.GetLevelColliders();
 
       // Set default values
       allowLeftMovement = true;
@@ -94,15 +137,30 @@ namespace GDPlatformer.Character
         allowDownMovement &= !CheckCollision(moveDownCollisionBox, collider.GetCollisionRectangle());
         allowUpMovement &= !CheckCollision(moveUpCollisionBox, collider.GetCollisionRectangle());
       }
+    }
+    private void CheckEnemyCollisions()
+    {
+      // Get Enemy Colliders
+      List<ICollide> enemyColliders = CollisionManager.Instance.GetEnemyColliders();
 
+      // Check Collision Boxes against Player
       foreach (ICollide collider in enemyColliders)
       {
         if (CheckCollision(new Rectangle((int)Position.X, (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y), collider.GetCollisionRectangle()))
-          Console.WriteLine("Enemy Hit");
+          return;
       }
+    }
+    #endregion
 
-      #region Horizontal Movement
-      // Horizontal Movement
+    #region Movement Methods
+    private void CalculateVelocity()
+    {
+      if (isInAir)
+        velocity.Y += gravity * elapsedGameTimeSeconds;
+      velocity.X = speed * elapsedGameTimeSeconds;
+    }
+    private void ApplyHorizontalMovement(GameTime gameTime)
+    {
       if (keyboardState.IsKeyDown(Keys.A) && allowLeftMovement)
       {
         Position.X -= speed * elapsedGameTimeSeconds;
@@ -115,9 +173,9 @@ namespace GDPlatformer.Character
         walkAnimation.Update(gameTime);
         isGoingLeft = false;
       }
-      #endregion
-
-      #region Vertical Movement
+    }
+    private void ApplyVerticalMovement(GameTime gameTime)
+    {
       // isInAir
       if (allowDownMovement)
         isInAir = true;
@@ -137,40 +195,21 @@ namespace GDPlatformer.Character
         velocity.Y = 0f;
         Position.Y += 1;
       }
-
-      // Apply Gravity
+    }
+    private void ApplyGravity()
+    {
       if (isInAir)
         Position.Y += velocity.Y;
       else
         velocity.Y = 0f;
-      #endregion
-    }
-
-    public override void Draw(SpriteBatch spriteBatch)
-    {
-      base.Draw(spriteBatch);
-      if (!isGoingLeft)
-        spriteBatch.Draw(texture, new Rectangle((int)Position.X, (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y), walkAnimation.CurrentFrame.SourceRectangle, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 0f);
-      else
-        spriteBatch.Draw(texture, new Rectangle((int)Position.X, (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y), walkAnimation.CurrentFrame.SourceRectangle, Color.White, 0f, Vector2.Zero, SpriteEffects.FlipHorizontally, 0f);
     }
     #endregion
 
-    #region Other Methods
-    private bool CheckCollision(Rectangle boundBox, Rectangle colliderBox)
+    #region Various Methods
+    private void ShowFPSCounter(GameTime gameTime, bool force = false)
     {
-      if (boundBox.Intersects(colliderBox))
-      {
-        return true;
-      }
-      return false;
-    }
-
-    private void LoadAnimations()
-    {
-      walkAnimation = new Animation();
-      walkAnimation.AddFrame(new Rectangle(0, 339, 68, 83));
-      walkAnimation.AddFrame(new Rectangle(0, 0, 70, 86));
+      if(DEBUG || force)
+        Console.WriteLine(1 / gameTime.ElapsedGameTime.TotalSeconds);
     }
     #endregion
   }
