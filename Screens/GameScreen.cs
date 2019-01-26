@@ -1,4 +1,6 @@
-﻿using GDPlatformer.Character;
+﻿using System.Collections.Generic;
+using GDPlatformer.Character;
+using GDPlatformer.Character.Base;
 using GDPlatformer.Gameplay;
 using GDPlatformer.Gameplay.Base;
 using GDPlatformer.Managers;
@@ -12,9 +14,9 @@ namespace GDPlatformer.Screens
   {
     #region Properties
     public Player Player;
-    private Bee bee;
     private HUD hud;
     private Level level;
+    private List<Enemy> enemies;
     #endregion
 
     #region Game Methods
@@ -27,10 +29,16 @@ namespace GDPlatformer.Screens
       hud.LoadContent();
       Player = new Player(new Vector2(100, 100));
       Player.LoadContent();
-      bee = new Bee(new Vector2(400, 430));
-      bee.LoadContent();
+      enemies = new List<Enemy>();
+      // list.RemoveAt(i);
+      enemies.Add(new Bee(new Vector2(400, 430)));
+      enemies.Add(new Bee(new Vector2(80, 430)));
+      foreach (Enemy enemie in enemies)
+      {
+        enemie.LoadContent();
+        CollisionManager.Instance.AddEnemyCollider(enemie);
+      }
 
-      CollisionManager.Instance.AddEnemyCollider(bee);
     }
 
     public override void UnloadContent()
@@ -38,7 +46,10 @@ namespace GDPlatformer.Screens
       base.UnloadContent();
       Player.UnloadContent();
       hud.UnloadContent();
-      bee.UnloadContent();
+      foreach (Enemy enemie in enemies)
+      {
+        enemie.UnloadContent();
+      }
     }
 
     public override void Update(GameTime gameTime)
@@ -47,7 +58,11 @@ namespace GDPlatformer.Screens
       Player.Update(gameTime);
       hud.UpdateHealth(Player.GetHealth());
       hud.Update(gameTime);
-      bee.Update(gameTime);
+      foreach (Enemy enemie in enemies)
+      {
+        enemie.Update(gameTime);
+      }
+
     }
 
     public void Draw(SpriteBatch spriteBatch, Camera camera)
@@ -56,7 +71,11 @@ namespace GDPlatformer.Screens
       level.Draw(spriteBatch);
       Player.Draw(spriteBatch);
       hud.Draw(spriteBatch, camera);
-      bee.Draw(spriteBatch);
+      foreach (Enemy enemie in enemies)
+      {
+        enemie.Draw(spriteBatch);
+      }
+
     }
     #endregion
   }

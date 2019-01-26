@@ -13,7 +13,7 @@ namespace GDPlatformer.Character
   {
     #region Properties
     private Texture2D texture;
-    private Animation moveAnimation, dieAnimation, deadAnimation, currentAnimation;
+    private Animation moveAnimation, deadAnimation, currentAnimation;
     private float elapsedGameTimeSeconds;
 
     // Position, Speed & Velocity
@@ -133,7 +133,7 @@ namespace GDPlatformer.Character
     }
     #endregion
 
-    #region Movement Methods
+    #region Movement Methods s
     private void ApplyVelocity()
     {
       if (isInAir)
@@ -173,14 +173,17 @@ namespace GDPlatformer.Character
       moveAnimation = new Animation();
       moveAnimation.AddFrame(new Rectangle(315, 353, 56, 48));
       moveAnimation.AddFrame(new Rectangle(140, 23, 61, 42));
-      dieAnimation = new Animation();
-      dieAnimation.AddFrame(new Rectangle(315, 353, 56, 48));
-      dieAnimation.AddFrame(new Rectangle(315, 44, 56, 48));
       deadAnimation = new Animation();
       deadAnimation.AddFrame(new Rectangle(315, 305, 56, 48));
       currentAnimation = moveAnimation;
     }
     #endregion
 
+    #region Various Methods
+    public bool IsDead()
+    {
+      return isGone;
+    }
+    #endregion
   }
 }

@@ -14,8 +14,7 @@ namespace GDPlatformer.Character
   {
     #region Properties
     private Texture2D playerTexture;
-    private Texture2D hudTexture;
-    private Animation walkAnimation;
+    private Animation walkAnimation, hurtAnimation, currentAnimation;
     private KeyboardState keyboardState;
     private float elapsedGameTimeSeconds;
 
@@ -38,9 +37,13 @@ namespace GDPlatformer.Character
     private bool allowRightMovement;
     private bool allowUpMovement;
     private bool allowDownMovement;
+
+    // Booleans
     private bool isInAir;
     private bool isGoingLeft;
-
+    private bool isHit;
+    private bool isMoving;
+    private double hitAnimationTimer;
     // Debug
     private readonly bool DEBUG = false;
     #endregion
@@ -73,10 +76,14 @@ namespace GDPlatformer.Character
       CalculateVelocity();
 
       CheckMoveCollisions();
-      CheckEnemyCollisions();
+      if (!isHit)
+        CheckEnemyCollisions();
 
       ApplyHorizontalMovement(gameTime);
       ApplyVerticalMovement(gameTime);
+
+      UpdateAnimation(gameTime);
+
       ApplyGravity();
     }
 
@@ -84,9 +91,9 @@ namespace GDPlatformer.Character
     {
       base.Draw(spriteBatch);
       if (!isGoingLeft)
-        spriteBatch.Draw(playerTexture, new Rectangle((int)Position.X, (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y), walkAnimation.CurrentFrame.SourceRectangle, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 0f);
+        spriteBatch.Draw(playerTexture, new Rectangle((int)Position.X, (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y), currentAnimation.CurrentFrame.SourceRectangle, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 0f);
       else
-        spriteBatch.Draw(playerTexture, new Rectangle((int)Position.X, (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y), walkAnimation.CurrentFrame.SourceRectangle, Color.White, 0f, Vector2.Zero, SpriteEffects.FlipHorizontally, 0f);
+        spriteBatch.Draw(playerTexture, new Rectangle((int)Position.X, (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y), currentAnimation.CurrentFrame.SourceRectangle, Color.White, 0f, Vector2.Zero, SpriteEffects.FlipHorizontally, 0f);
     }
     #endregion
 
@@ -100,6 +107,8 @@ namespace GDPlatformer.Character
       walkAnimation = new Animation();
       walkAnimation.AddFrame(new Rectangle(0, 339, 68, 83));
       walkAnimation.AddFrame(new Rectangle(0, 0, 70, 86));
+      hurtAnimation = new Animation();
+      hurtAnimation.AddFrame(new Rectangle(0, 258, 69, 82));
     }
     #endregion
 
@@ -140,16 +149,22 @@ namespace GDPlatformer.Character
     }
     private void CheckEnemyCollisions()
     {
-      // Get Enemy Colliders
-      List<Enemy> enemyColliders = CollisionManager.Instance.GetEnemyColliders();
+      if (!isHit)
+      {      // Get Enemy Colliders
+        List<Enemy> enemyColliders = CollisionManager.Instance.GetEnemyColliders();
 
-      // Check Collision Boxes against Player
-      foreach (Enemy collider in enemyColliders)
-      {
-        if (CheckCollision(new Rectangle((int)Position.X, (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y), collider.GetCollisionRectangle()))
+        // Check Collision Boxes against Player
+        foreach (Enemy collider in enemyColliders)
         {
-          health = 2;
-          collider.Hit();
+          if (CheckCollision(new Rectangle((int)Position.X, (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y), collider.GetCollisionRectangle()))
+          {
+            if (health != 1)
+              health--;
+            else
+              Die();
+            collider.Hit();
+            isHit = true;
+          }
         }
       }
     }
@@ -164,16 +179,17 @@ namespace GDPlatformer.Character
     }
     private void ApplyHorizontalMovement(GameTime gameTime)
     {
+      isMoving = false;
       if (keyboardState.IsKeyDown(Keys.A) && allowLeftMovement)
       {
         Position.X -= speed * elapsedGameTimeSeconds;
-        walkAnimation.Update(gameTime);
+        isMoving = true;
         isGoingLeft = true;
       }
       else if (keyboardState.IsKeyDown(Keys.D) && allowRightMovement)
       {
         Position.X += speed * elapsedGameTimeSeconds;
-        walkAnimation.Update(gameTime);
+        isMoving = true;
         isGoingLeft = false;
       }
     }
@@ -206,6 +222,24 @@ namespace GDPlatformer.Character
       else
         velocity.Y = 0f;
     }
+    private void UpdateAnimation(GameTime gameTime)
+    {
+      if (isHit)
+      {
+        currentAnimation = hurtAnimation;
+        hitAnimationTimer += gameTime.ElapsedGameTime.TotalSeconds;
+      }
+      else
+      {
+        hitAnimationTimer = 0f;
+        currentAnimation = walkAnimation;
+      }
+
+      if (isHit || (!isHit && isMoving))
+        currentAnimation.Update(gameTime);
+
+      isHit &= hitAnimationTimer <= 1f;
+    }
     #endregion
 
     #region Various Methods
@@ -216,6 +250,9 @@ namespace GDPlatformer.Character
     }
     public int GetHealth() {
       return health;
+    }
+    private void Die() {
+      Console.WriteLine("You dead bro");
     }
     #endregion
   }
