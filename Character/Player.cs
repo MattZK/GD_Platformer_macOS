@@ -141,14 +141,15 @@ namespace GDPlatformer.Character
     private void CheckEnemyCollisions()
     {
       // Get Enemy Colliders
-      List<ICollide> enemyColliders = CollisionManager.Instance.GetEnemyColliders();
+      List<Enemy> enemyColliders = CollisionManager.Instance.GetEnemyColliders();
 
       // Check Collision Boxes against Player
-      foreach (ICollide collider in enemyColliders)
+      foreach (Enemy collider in enemyColliders)
       {
         if (CheckCollision(new Rectangle((int)Position.X, (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y), collider.GetCollisionRectangle()))
         {
           health = 2;
+          collider.Hit();
         }
       }
     }

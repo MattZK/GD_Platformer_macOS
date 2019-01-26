@@ -75,6 +75,7 @@
     <Compile Include="Managers\CollisionManager.cs" />
     <Compile Include="Character\Bee.cs" />
     <Compile Include="Gameplay\Base\HUD.cs" />
+    <Compile Include="Character\Base\Enemy.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />

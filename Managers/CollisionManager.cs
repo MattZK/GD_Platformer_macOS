@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using GDPlatformer.Character.Base;
 using GDPlatformer.Gameplay.Collision;
 
 namespace GDPlatformer.Managers
@@ -23,14 +24,14 @@ namespace GDPlatformer.Managers
 
     #region Properties
     private List<ICollide> levelColliders;
-    private List<ICollide> enemyColliders;
+    private List<Enemy> enemyColliders;
     #endregion
 
     #region Methods
     CollisionManager()
     {
       levelColliders = new List<ICollide>();
-      enemyColliders = new List<ICollide>();
+      enemyColliders = new List<Enemy>();
     }
 
     public void AddLevelCollider(ICollide levelCollider)
@@ -43,12 +44,12 @@ namespace GDPlatformer.Managers
     }
 
 
-    public void AddEnemyCollider(ICollide enemyCollider)
+    public void AddEnemyCollider(Enemy enemyCollider)
     {
       enemyColliders.Add(enemyCollider);
     }
 
-    public List<ICollide> GetEnemyColliders()
+    public List<Enemy> GetEnemyColliders()
     {
       return enemyColliders;
     }
