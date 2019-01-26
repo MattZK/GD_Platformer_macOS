@@ -15,12 +15,12 @@ namespace GDPlatformer.Gameplay
     public Texture2D background;
 
     private List<List<int>> _level = new List<List<int>>() {
-      new List<int>{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,3 },
-      new List<int>{1 },
-      new List<int>{4,0,0,2,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,3,0,0,0,0,0 },
-      new List<int>{4,0,0,0,0,0 },
-      new List<int>{4,0,0,0,0,0 },
-      new List<int>{4,1,1,1,1,1,6,0,0,7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,4 }
+      new List<int>{9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,9 },
+      new List<int>{9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,3,0,0,0,0,0,0,0,0,0,0,0,0,9 },
+      new List<int>{9,0,0,2,3,0,0,0,0,0,0,2,3,0,0,0,0,0,0,0,0,0,2,1,3,0,0,0,0,0,0,9 },
+      new List<int>{9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,9 },
+      new List<int>{9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,9 },
+      new List<int>{1,1,1,1,1,1,6,0,0,7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 }
     };
 
     private Block[,] _blocks;
@@ -38,28 +38,33 @@ namespace GDPlatformer.Gameplay
         for (int y = 0; y < _level[x].Count; y++)
         {
           int v = (int)height - (_level.Count - x) * 70;
+          int h = y * 70 - 70;
           switch (_level[x][y])
           {
             case 1:
-              _blocks[x, y] = new Block(texture, new Vector2(y * 70, v), new Vector2(280, 210));
+              _blocks[x, y] = new Block(texture, new Vector2(h, v), new Vector2(280, 210));
               break;
             case 2:
-              _blocks[x, y] = new Block(texture, new Vector2(y * 70, v), new Vector2(280, 280));
+              _blocks[x, y] = new Block(texture, new Vector2(h, v), new Vector2(280, 280));
               break;
             case 3:
-              _blocks[x, y] = new Block(texture, new Vector2(y * 70, v), new Vector2(280, 140));
+              _blocks[x, y] = new Block(texture, new Vector2(h, v), new Vector2(280, 140));
               break;
             case 4:
-              _blocks[x, y] = new Block(texture, new Vector2(y * 70, v), new Vector2(0, 350));
+              _blocks[x, y] = new Block(texture, new Vector2(h, v), new Vector2(0, 350));
               break;
             case 5:
-              _blocks[x, y] = new Block(texture, new Vector2(y * 70, v), new Vector2(280, 70));
+              _blocks[x, y] = new Block(texture, new Vector2(h, v), new Vector2(280, 70));
               break;
             case 6:
-              _blocks[x, y] = new Block(texture, new Vector2(y * 70, v), new Vector2(140, 280));
+              _blocks[x, y] = new Block(texture, new Vector2(h, v), new Vector2(140, 280));
               break;
             case 7:
-              _blocks[x, y] = new Block(texture, new Vector2(y * 70, v), new Vector2(140, 350));
+              _blocks[x, y] = new Block(texture, new Vector2(h, v), new Vector2(140, 350));
+              break;
+            case 9:
+              // Invisible
+              _blocks[x, y] = new Block(texture, new Vector2(h, v), new Vector2(350, 350));
               break;
           }
           if (_level[x][y] != 0)

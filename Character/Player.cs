@@ -77,6 +77,7 @@ namespace GDPlatformer.Character
 
       ApplyHorizontalMovement(gameTime);
       ApplyVerticalMovement(gameTime);
+      ApplyGravity();
     }
 
     public override void Draw(SpriteBatch spriteBatch)
@@ -93,7 +94,6 @@ namespace GDPlatformer.Character
     private void LoadTextures()
     {
       playerTexture = content.Load<Texture2D>("Character/alien_yellow");
-      hudTexture = content.Load<Texture2D>("Items/hud");
     }
     private void LoadAnimations()
     {
@@ -147,7 +147,9 @@ namespace GDPlatformer.Character
       foreach (ICollide collider in enemyColliders)
       {
         if (CheckCollision(new Rectangle((int)Position.X, (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y), collider.GetCollisionRectangle()))
-          return;
+        {
+          health = 2;
+        }
       }
     }
     #endregion
@@ -210,6 +212,9 @@ namespace GDPlatformer.Character
     {
       if(DEBUG || force)
         Console.WriteLine(1 / gameTime.ElapsedGameTime.TotalSeconds);
+    }
+    public int GetHealth() {
+      return health;
     }
     #endregion
   }

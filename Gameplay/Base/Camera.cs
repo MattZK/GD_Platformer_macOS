@@ -40,5 +40,16 @@ namespace GDPlatformer.Gameplay.Base
       }
       return Matrix.CreateTranslation(new Vector3(-_position, 0)) * Matrix.CreateRotationZ(0) * Matrix.CreateScale(1, 1, 1);
     }
+
+    public Vector2 GetOrigin()
+    {
+      return _position;
+    }
+
+    public Viewport GetViewPort()
+    {
+      return _viewport;
+    }
+
   }
 }

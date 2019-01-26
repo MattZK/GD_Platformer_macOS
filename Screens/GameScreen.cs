@@ -1,6 +1,6 @@
-﻿using System;
-using GDPlatformer.Character;
+﻿using GDPlatformer.Character;
 using GDPlatformer.Gameplay;
+using GDPlatformer.Gameplay.Base;
 using GDPlatformer.Managers;
 using GDPlatformer.Managers.Base;
 using Microsoft.Xna.Framework;
@@ -13,6 +13,7 @@ namespace GDPlatformer.Screens
     #region Properties
     public Player Player;
     private Bee bee;
+    private HUD hud;
     private Level level;
     #endregion
 
@@ -22,10 +23,13 @@ namespace GDPlatformer.Screens
       base.LoadContent();
       level = new Level();
       level.LoadContent(content);
+      hud = new HUD();
+      hud.LoadContent();
       Player = new Player(new Vector2(100, 100));
       Player.LoadContent();
       bee = new Bee(new Vector2(400, 430));
       bee.LoadContent();
+
       CollisionManager.Instance.AddEnemyCollider(bee);
     }
 
@@ -33,6 +37,7 @@ namespace GDPlatformer.Screens
     {
       base.UnloadContent();
       Player.UnloadContent();
+      hud.UnloadContent();
       bee.UnloadContent();
     }
 
@@ -40,14 +45,17 @@ namespace GDPlatformer.Screens
     {
       base.Update(gameTime);
       Player.Update(gameTime);
+      hud.UpdateHealth(Player.GetHealth());
+      hud.Update(gameTime);
       bee.Update(gameTime);
     }
 
-    public override void Draw(SpriteBatch spriteBatch)
+    public void Draw(SpriteBatch spriteBatch, Camera camera)
     {
       base.Draw(spriteBatch);
       level.Draw(spriteBatch);
       Player.Draw(spriteBatch);
+      hud.Draw(spriteBatch, camera);
       bee.Draw(spriteBatch);
     }
     #endregion

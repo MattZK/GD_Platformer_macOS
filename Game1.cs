@@ -19,6 +19,7 @@ namespace GDPlatformer.MacOS
     Camera camera;
     GameScreen gameScreen;
     Color background;
+    Matrix currentViewMatrix;
     #endregion
 
     #region Constructor
@@ -83,6 +84,7 @@ namespace GDPlatformer.MacOS
         gameScreen = (GameScreen)ScreenManager.Instance.CurrentScreen;
         camera.SetReference(gameScreen.Player);
       }
+      currentViewMatrix = camera.GetViewMatrix();
     }
 
     /// <summary>
@@ -93,8 +95,17 @@ namespace GDPlatformer.MacOS
     {
       base.Draw(gameTime);
       graphics.GraphicsDevice.Clear(background);
-      spriteBatch.Begin(transformMatrix: camera.GetViewMatrix());
-      ScreenManager.Instance.Draw(spriteBatch);
+      spriteBatch.Begin(transformMatrix: currentViewMatrix);
+
+      if (ScreenManager.Instance.CurrentScreen is GameScreen)
+      {
+        gameScreen.Draw(spriteBatch, camera);
+      }
+      else
+      {
+        ScreenManager.Instance.Draw(spriteBatch);
+      }
+
       spriteBatch.End();
     }
     #endregion
