@@ -23,12 +23,14 @@ namespace GDPlatformer.Managers
 
     #region Properties
     private List<ICollide> levelColliders;
+    private List<ICollide> enemyColliders;
     #endregion
 
     #region Methods
     CollisionManager()
     {
       levelColliders = new List<ICollide>();
+      enemyColliders = new List<ICollide>();
     }
 
     public void AddLevelCollider(ICollide levelCollider)
@@ -38,6 +40,17 @@ namespace GDPlatformer.Managers
 
     public List<ICollide> GetLevelColliders() {
       return levelColliders;
+    }
+
+
+    public void AddEnemyCollider(ICollide enemyCollider)
+    {
+      enemyColliders.Add(enemyCollider);
+    }
+
+    public List<ICollide> GetEnemyColliders()
+    {
+      return enemyColliders;
     }
     #endregion
   }

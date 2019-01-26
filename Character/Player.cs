@@ -37,6 +37,7 @@ namespace GDPlatformer.Character
     private bool allowUpMovement;
     private bool allowDownMovement;
     private bool isInAir;
+    private bool isGoingLeft;
     #endregion
 
     #region Constructor
@@ -64,6 +65,7 @@ namespace GDPlatformer.Character
 
       // Get Values & States
       List<ICollide> levelColliders = CollisionManager.Instance.GetLevelColliders();
+      List<ICollide> enemyColliders = CollisionManager.Instance.GetEnemyColliders();
       elapsedGameTimeSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
       keyboardState = Keyboard.GetState();
 
@@ -93,17 +95,25 @@ namespace GDPlatformer.Character
         allowUpMovement &= !CheckCollision(moveUpCollisionBox, collider.GetCollisionRectangle());
       }
 
+      foreach (ICollide collider in enemyColliders)
+      {
+        if (CheckCollision(new Rectangle((int)Position.X, (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y), collider.GetCollisionRectangle()))
+          Console.WriteLine("Enemy Hit");
+      }
+
       #region Horizontal Movement
       // Horizontal Movement
       if (keyboardState.IsKeyDown(Keys.A) && allowLeftMovement)
       {
         Position.X -= speed * elapsedGameTimeSeconds;
         walkAnimation.Update(gameTime);
+        isGoingLeft = true;
       }
       else if (keyboardState.IsKeyDown(Keys.D) && allowRightMovement)
       {
         Position.X += speed * elapsedGameTimeSeconds;
         walkAnimation.Update(gameTime);
+        isGoingLeft = false;
       }
       #endregion
 
@@ -139,7 +149,10 @@ namespace GDPlatformer.Character
     public override void Draw(SpriteBatch spriteBatch)
     {
       base.Draw(spriteBatch);
-      spriteBatch.Draw(texture, Position, walkAnimation.CurrentFrame.SourceRectangle, Color.White);
+      if (!isGoingLeft)
+        spriteBatch.Draw(texture, new Rectangle((int)Position.X, (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y), walkAnimation.CurrentFrame.SourceRectangle, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 0f);
+      else
+        spriteBatch.Draw(texture, new Rectangle((int)Position.X, (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y), walkAnimation.CurrentFrame.SourceRectangle, Color.White, 0f, Vector2.Zero, SpriteEffects.FlipHorizontally, 0f);
     }
     #endregion
 

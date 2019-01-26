@@ -73,6 +73,7 @@
     <Compile Include="Gameplay\Base\Camera.cs" />
     <Compile Include="Character\Animate\Animation.cs" />
     <Compile Include="Managers\CollisionManager.cs" />
+    <Compile Include="Character\Bee.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
