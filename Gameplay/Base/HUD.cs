@@ -37,5 +37,10 @@ namespace GDPlatformer.Gameplay.Base
         spriteBatch.Draw(hudTexture, new Vector2(origin.X + 16, origin.Y + 16), new Rectangle(0, 256, 128, 128), Color.White, 0f, Vector2.Zero, 0.25f, SpriteEffects.None, 0f);
     }
 
+    private void drawDeadScreen()
+    {
+
+    }
+
   }
 }

@@ -26,12 +26,6 @@ namespace GDPlatformer.Character
     private Vector2 velocity = new Vector2(0f, 0f);
     private int health = 3;
 
-    // Collision Boxes
-    private Rectangle moveLeftCollisionBox;
-    private Rectangle moveRightCollisionBox;
-    private Rectangle moveUpCollisionBox;
-    private Rectangle moveDownCollisionBox;
-
     // Movement
     private bool allowLeftMovement;
     private bool allowRightMovement;
@@ -124,10 +118,10 @@ namespace GDPlatformer.Character
     private void CheckMoveCollisions()
     {
       // Generated Collision Boxes
-      moveLeftCollisionBox = new Rectangle((int)(Position.X - velocity.X), (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y);
-      moveRightCollisionBox = new Rectangle((int)(Position.X + velocity.X), (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y);
-      moveUpCollisionBox = new Rectangle((int)Position.X, (int)(Position.Y - velocity.Y), (int)Dimensions.X, (int)Dimensions.Y);
-      moveDownCollisionBox = new Rectangle((int)Position.X, (int)(Position.Y + velocity.Y), (int)Dimensions.X, (int)Dimensions.Y);
+      Rectangle moveLeftCollisionBox = new Rectangle((int)(Position.X - velocity.X), (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y);
+      Rectangle moveRightCollisionBox = new Rectangle((int)(Position.X + velocity.X), (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y);
+      Rectangle moveUpCollisionBox = new Rectangle((int)Position.X, (int)(Position.Y - velocity.Y), (int)Dimensions.X, (int)Dimensions.Y);
+      Rectangle moveDownCollisionBox = new Rectangle((int)Position.X, (int)(Position.Y + velocity.Y), (int)Dimensions.X, (int)Dimensions.Y);
 
       // Get Level Colliders
       List<ICollide> levelColliders = CollisionManager.Instance.GetLevelColliders();
@@ -222,6 +216,17 @@ namespace GDPlatformer.Character
       else
         velocity.Y = 0f;
     }
+    #endregion
+
+    #region LifeCycle Methods
+    public int GetHealth()
+    {
+      return health;
+    }
+    private void Die()
+    {
+      health = 0;
+    }
     private void UpdateAnimation(GameTime gameTime)
     {
       if (isHit)
@@ -242,17 +247,11 @@ namespace GDPlatformer.Character
     }
     #endregion
 
-    #region Various Methods
+    #region Debug Methods
     private void ShowFPSCounter(GameTime gameTime, bool force = false)
     {
       if(DEBUG || force)
         Console.WriteLine(1 / gameTime.ElapsedGameTime.TotalSeconds);
-    }
-    public int GetHealth() {
-      return health;
-    }
-    private void Die() {
-      health = 0;
     }
     #endregion
   }

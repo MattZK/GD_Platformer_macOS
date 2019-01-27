@@ -51,9 +51,7 @@ namespace GDPlatformer.Character.Enemies
       base.LoadContent();
       texture = content.Load<Texture2D>("Character/enemies");
     }
-
     public override void UnloadContent() => base.UnloadContent();
-
     public override void Update(GameTime gameTime)
     {
       base.Update(gameTime);
@@ -72,11 +70,10 @@ namespace GDPlatformer.Character.Enemies
         ApplyVerticalMovement(gameTime);
       }
 
-      isGone |= !allowDownMovement;
+      isGone |= !allowDownMovement || Position.Y > 1500;
 
       currentAnimation.Update(gameTime);
     }
-
     public override void Draw(SpriteBatch spriteBatch)
     {
       base.Draw(spriteBatch);
@@ -89,11 +86,6 @@ namespace GDPlatformer.Character.Enemies
       }
     }
     #endregion
-
-    public override void Hit()
-    {
-      isDead = true;
-    }
 
     #region Collision Methods
     private bool CheckCollision(Rectangle boundBox, Rectangle colliderBox)
@@ -131,9 +123,13 @@ namespace GDPlatformer.Character.Enemies
     {
       return new Rectangle((int)Position.X, (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y);
     }
+    public override void Hit()
+    {
+      isDead = true;
+    }
     #endregion
 
-    #region Movement Methods s
+    #region Movement Methods
     private void ApplyVelocity()
     {
       if (isInAir)
