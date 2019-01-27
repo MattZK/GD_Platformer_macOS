@@ -33,7 +33,7 @@ namespace GDPlatformer.Managers
     #region Constructor
     public ScreenManager() {
       Dimensions = new Vector2(1200, 700);
-      CurrentScreen = new GameScreen();
+      CurrentScreen = new MenuScreen();
     }
     #endregion
 

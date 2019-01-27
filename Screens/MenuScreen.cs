@@ -3,6 +3,7 @@ using GDPlatformer.Managers;
 using GDPlatformer.Managers.Base;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace GDPlatformer.Screens
 {
@@ -35,6 +36,15 @@ namespace GDPlatformer.Screens
       Vector2 origin = new Vector2((arialFont.MeasureString("Menu Screen").X / 2), (arialFont.MeasureString("Menu Screen").Y / 2));
       spriteBatch.DrawString(arialFont, "Menu Screen", position, Color.White, 0, origin, 4f, SpriteEffects.None, 0);
       base.Draw(spriteBatch);
+
+      KeyboardState keyboardState = Keyboard.GetState();
+
+      if (keyboardState.IsKeyDown(Keys.Enter))
+      {
+        ScreenManager.Instance.CurrentScreen.UnloadContent();
+        ScreenManager.Instance.CurrentScreen = new GameScreen();
+        ScreenManager.Instance.CurrentScreen.LoadContent();
+      }
     }
     #endregion
   }
