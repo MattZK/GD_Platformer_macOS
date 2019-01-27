@@ -8,7 +8,7 @@ namespace GDPlatformer.Gameplay.Base
   public class HUD
   {
     protected ContentManager content;
-    private Texture2D hudTexture;
+    private Texture2D hudTexture, deadOverlayTexture;
     private SpriteFont font;
     private int health;
     private int score;
@@ -17,6 +17,7 @@ namespace GDPlatformer.Gameplay.Base
     {
       content = new ContentManager(ScreenManager.Instance.Content.ServiceProvider, "Content");
       hudTexture = content.Load<Texture2D>("Items/hud");
+      deadOverlayTexture = content.Load<Texture2D>("Background/deadColorOverlay");
       font = content.Load<SpriteFont>("Fonts/Arial");
 
     }
@@ -52,9 +53,10 @@ namespace GDPlatformer.Gameplay.Base
       spriteBatch.DrawString(font, amount.ToString(), new Vector2(origin.X - 48, origin.Y + 4), Color.Black);
     }
 
-    private void drawDeadScreen()
+    public void ShowGameOver(SpriteBatch spriteBatch)
     {
-
+      spriteBatch.Draw(deadOverlayTexture, new Vector2(0, 0), Color.White);
+      spriteBatch.DrawString(font, "You Died", new Vector2(60, 60), Color.White);
     }
 
   }

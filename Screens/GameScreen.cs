@@ -33,6 +33,7 @@ namespace GDPlatformer.Screens
       enemies = new List<Enemy>
       {
         new Bee(new Vector2(400, 430)),
+        new Bee(new Vector2(440, 430)),
         new Bee(new Vector2(80, 430))
       };
       for (int i = 0; i < enemies.Count; i++)
@@ -51,11 +52,13 @@ namespace GDPlatformer.Screens
       {
         enemy.UnloadContent();
       }
-    }
+      CollisionManager.Instance.Reset();
+  }
 
     public override void Update(GameTime gameTime)
     {
       base.Update(gameTime);
+
       Player.Update(gameTime);
       hud.UpdateHealth(Player.GetHealth());
       hud.UpdateScore(Player.GetScore());
@@ -82,7 +85,7 @@ namespace GDPlatformer.Screens
       {
         enemy.Draw(spriteBatch);
       }
-
+      if (Player.IsDead()) hud.ShowGameOver(spriteBatch);
     }
     #endregion
   }

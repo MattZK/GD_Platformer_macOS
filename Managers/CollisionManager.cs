@@ -31,6 +31,11 @@ namespace GDPlatformer.Managers
 
     CollisionManager()
     {
+      Reset();
+    }
+
+    public void Reset()
+    {
       levelColliders = new List<ICollide>();
       enemyColliders = new List<Enemy>();
       coinColliders = new List<Coin>();

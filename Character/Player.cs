@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 using GDPlatformer.Gameplay.Items;
+using GDPlatformer.Screens;
 
 namespace GDPlatformer.Character
 {
@@ -26,7 +27,7 @@ namespace GDPlatformer.Character
     private readonly float gravity = 1.9f;
     private Vector2 velocity = new Vector2(0f, 0f);
     private int health = 3;
-    private int score = 0;
+    private int score;
 
     // Movement
     private bool allowLeftMovement;
@@ -69,22 +70,25 @@ namespace GDPlatformer.Character
       elapsedGameTimeSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
       keyboardState = Keyboard.GetState();
 
-      CalculateVelocity();
+      if (health != 0)
+      {
+        CalculateVelocity();
 
-      CheckMoveCollisions();
-      if (!isHit)
-        CheckEnemyCollisions();
+        CheckMoveCollisions();
+        if (!isHit)
+          CheckEnemyCollisions();
 
-      CheckCoinCollisions();
+        CheckCoinCollisions();
 
-      ApplyHorizontalMovement(gameTime);
-      ApplyVerticalMovement(gameTime);
+        ApplyHorizontalMovement(gameTime);
+        ApplyVerticalMovement(gameTime);
 
-      UpdateAnimation(gameTime);
+        UpdateAnimation(gameTime);
 
-      ApplyGravity();
+        ApplyGravity();
 
-      CheckMapBounds();
+        CheckMapBounds();
+      }
     }
 
     public override void Draw(SpriteBatch spriteBatch)
@@ -93,6 +97,7 @@ namespace GDPlatformer.Character
       SpriteEffects spriteEffect;
       if (isGoingLeft) spriteEffect = SpriteEffects.FlipHorizontally; else spriteEffect = SpriteEffects.None;
       spriteBatch.Draw(playerTexture, new Rectangle((int)Position.X, (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y), currentAnimation.CurrentFrame.SourceRectangle, Color.White, 0f, Vector2.Zero, spriteEffect, 0f);
+      if(health == 0) CheckLevelReset();
     }
     #endregion
 
@@ -213,7 +218,7 @@ namespace GDPlatformer.Character
         isInAir = false;
 
       // Jump
-      if (keyboardState.IsKeyDown(Keys.Space) && !isInAir)
+      if ((keyboardState.IsKeyDown(Keys.Space) || keyboardState.IsKeyDown(Keys.W)) && !isInAir)
       {
         isInAir = true;
         velocity.Y = -1.2f;
@@ -248,6 +253,10 @@ namespace GDPlatformer.Character
     {
       return score;
     }
+    public bool IsDead()
+    {
+      return health == 0;
+    }
     private void Hit()
     {
       if (health != 1)
@@ -258,6 +267,14 @@ namespace GDPlatformer.Character
     private void Die()
     {
       health = 0;
+    }
+    private void CheckLevelReset()
+    {
+      if (keyboardState.IsKeyDown(Keys.Enter)) {
+        ScreenManager.Instance.CurrentScreen.UnloadContent();
+        ScreenManager.Instance.CurrentScreen = new GameScreen();
+        ScreenManager.Instance.CurrentScreen.LoadContent();
+      }
     }
     private void UpdateAnimation(GameTime gameTime)
     {
