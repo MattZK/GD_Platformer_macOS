@@ -83,6 +83,8 @@ namespace GDPlatformer.Character
       UpdateAnimation(gameTime);
 
       ApplyGravity();
+
+      CheckMapBounds();
     }
 
     public override void Draw(SpriteBatch spriteBatch)
@@ -155,10 +157,7 @@ namespace GDPlatformer.Character
         {
           if (CheckCollision(new Rectangle((int)Position.X, (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y), enemy.GetCollisionRectangle()))
           {
-            if (health != 1)
-              health--;
-            else
-              Die();
+            Hit();
             enemy.Hit();
             isHit = true;
           }
@@ -234,6 +233,10 @@ namespace GDPlatformer.Character
       else
         velocity.Y = 0f;
     }
+    private void CheckMapBounds()
+    {
+      if (Position.Y > 800) Die();
+    }
     #endregion
 
     #region LifeCycle Methods
@@ -244,6 +247,13 @@ namespace GDPlatformer.Character
     public int GetScore()
     {
       return score;
+    }
+    private void Hit()
+    {
+      if (health != 1)
+        health--;
+      else
+        Die();
     }
     private void Die()
     {
