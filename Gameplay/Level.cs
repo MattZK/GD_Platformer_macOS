@@ -13,6 +13,7 @@ namespace GDPlatformer.Gameplay
     #region Properties
     public Texture2D texture;
     public Texture2D background;
+    public Texture2D levelDecorators;
 
     private List<List<int>> _level = new List<List<int>>() {
       new List<int>{9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,9 },
@@ -29,9 +30,26 @@ namespace GDPlatformer.Gameplay
     #region Game Methods
     public void LoadContent(ContentManager content)
     {
-      float height = ScreenManager.Instance.Dimensions.Y;
+      LoadTextures(content);
+      GenerateLevel();
+    }
+
+    public void Draw(SpriteBatch spriteBatch)
+    {
+      DrawBackground(spriteBatch, 5);
+      DrawBlocks(spriteBatch);
+    }
+    #endregion
+
+    #region Generation & Loading Methods
+    private void LoadTextures(ContentManager content)
+    {
       texture = content.Load<Texture2D>("Items/grass_blocks");
       background = content.Load<Texture2D>("Background/blue");
+    }
+    private void GenerateLevel()
+    {
+      float height = ScreenManager.Instance.Dimensions.Y;
       _blocks = new Block[_level.Count, _level[_level.Count - 1].Count];
       for (int x = 0; x < _level.Count; x++)
       {
@@ -72,14 +90,18 @@ namespace GDPlatformer.Gameplay
         }
       }
     }
+    #endregion
 
-    public void Draw(SpriteBatch spriteBatch)
-    {
+    #region Draw Methods
+    private void DrawBackground(SpriteBatch spriteBatch, int times = 1) {
       float hScale = ScreenManager.Instance.Dimensions.Y / 1024;
-      for (int i = 0; i < 5; i++)
+      for (int i = 0; i < times; i++)
       {
         spriteBatch.Draw(background, new Vector2(i * 1024 * hScale, 0), null, Color.White, 0f, Vector2.Zero, hScale, SpriteEffects.None, 0f);
       }
+    }
+    private void DrawBlocks(SpriteBatch spriteBatch)
+    {
       for (int x = 0; x < _level.Count; x++)
       {
         for (int y = 0; y < _level[x].Count; y++)
