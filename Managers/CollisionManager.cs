@@ -44,9 +44,18 @@ namespace GDPlatformer.Managers
     }
 
 
-    public void AddEnemyCollider(Enemy enemyCollider)
+    public void AddEnemyCollider(Enemy enemy)
     {
-      enemyColliders.Add(enemyCollider);
+      enemyColliders.Add(enemy);
+    }
+
+    public void RemoveEnemyCollider(Enemy enemy)
+    {
+      for (int i = 0; i < enemyColliders.Count; i++)
+      {
+        if (enemyColliders[i] == enemy)
+          enemyColliders.RemoveAt(i);
+      }
     }
 
     public List<Enemy> GetEnemyColliders()

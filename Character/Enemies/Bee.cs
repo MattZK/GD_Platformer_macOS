@@ -7,7 +7,7 @@ using GDPlatformer.Managers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace GDPlatformer.Character
+namespace GDPlatformer.Character.Enemies
 {
   public class Bee : Enemy, ICollide
   {
@@ -180,7 +180,7 @@ namespace GDPlatformer.Character
     #endregion
 
     #region Various Methods
-    public bool IsDead()
+    public override bool IsDead()
     {
       return isGone;
     }

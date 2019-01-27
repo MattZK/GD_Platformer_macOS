@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using GDPlatformer.Character;
 using GDPlatformer.Character.Base;
+using GDPlatformer.Character.Enemies;
 using GDPlatformer.Gameplay;
 using GDPlatformer.Gameplay.Base;
 using GDPlatformer.Managers;
@@ -30,15 +31,13 @@ namespace GDPlatformer.Screens
       Player = new Player(new Vector2(100, 100));
       Player.LoadContent();
       enemies = new List<Enemy>();
-      // list.RemoveAt(i);
       enemies.Add(new Bee(new Vector2(400, 430)));
       enemies.Add(new Bee(new Vector2(80, 430)));
-      foreach (Enemy enemie in enemies)
+      for (int i = 0; i < enemies.Count; i++)
       {
-        enemie.LoadContent();
-        CollisionManager.Instance.AddEnemyCollider(enemie);
+        enemies[i].LoadContent();
+        CollisionManager.Instance.AddEnemyCollider(enemies[i]);
       }
-
     }
 
     public override void UnloadContent()
@@ -46,9 +45,9 @@ namespace GDPlatformer.Screens
       base.UnloadContent();
       Player.UnloadContent();
       hud.UnloadContent();
-      foreach (Enemy enemie in enemies)
+      foreach (Enemy enemy in enemies)
       {
-        enemie.UnloadContent();
+        enemy.UnloadContent();
       }
     }
 
@@ -58,9 +57,14 @@ namespace GDPlatformer.Screens
       Player.Update(gameTime);
       hud.UpdateHealth(Player.GetHealth());
       hud.Update(gameTime);
-      foreach (Enemy enemie in enemies)
+      for (int i = 0; i < enemies.Count; i++)
       {
-        enemie.Update(gameTime);
+        enemies[i].Update(gameTime);
+        if (enemies[i].IsDead())
+        {
+          CollisionManager.Instance.RemoveEnemyCollider(enemies[i]);
+          enemies.RemoveAt(i);
+        }
       }
 
     }
@@ -71,9 +75,9 @@ namespace GDPlatformer.Screens
       level.Draw(spriteBatch);
       Player.Draw(spriteBatch);
       hud.Draw(spriteBatch, camera);
-      foreach (Enemy enemie in enemies)
+      foreach (Enemy enemy in enemies)
       {
-        enemie.Draw(spriteBatch);
+        enemy.Draw(spriteBatch);
       }
 
     }

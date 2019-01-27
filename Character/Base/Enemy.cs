@@ -36,5 +36,9 @@ namespace GDPlatformer.Character.Base
     {
       return Rectangle.Empty;
     }
+
+    public virtual bool IsDead() {
+      return false;
+    }
   }
 }

@@ -238,7 +238,7 @@ namespace GDPlatformer.Character
       if (isHit || (!isHit && isMoving))
         currentAnimation.Update(gameTime);
 
-      isHit &= hitAnimationTimer <= 1f;
+      isHit &= hitAnimationTimer <= .6f;
     }
     #endregion
 
@@ -252,7 +252,7 @@ namespace GDPlatformer.Character
       return health;
     }
     private void Die() {
-      Console.WriteLine("You dead bro");
+      health = 0;
     }
     #endregion
   }
