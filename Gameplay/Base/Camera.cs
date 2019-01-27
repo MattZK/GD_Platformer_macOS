@@ -8,7 +8,7 @@ namespace GDPlatformer.Gameplay.Base
   public class Camera
   {
     private Viewport _viewport;
-    private Vector2 _position { get; set; }
+    private Vector2 _position;
     private Player _reference { get; set; }
 
     public Camera(Viewport viewport)
@@ -24,6 +24,7 @@ namespace GDPlatformer.Gameplay.Base
     public Matrix GetViewMatrix()
     {
       float y = 0;
+      _position = new Vector2(0, 0);
       if(_reference != null) {
         if (_reference.Position.Y < 100)
           y = _reference.Position.Y - 100;
@@ -34,10 +35,8 @@ namespace GDPlatformer.Gameplay.Base
         else
           _position = new Vector2(0, y);
       }
-      else
-      {
-        _position = new Vector2(0, 0);
-      }
+      // Fix Tearing
+      _position.X = (float)Math.Round(_position.X);
       return Matrix.CreateTranslation(new Vector3(-_position, 0)) * Matrix.CreateRotationZ(0) * Matrix.CreateScale(1, 1, 1);
     }
 

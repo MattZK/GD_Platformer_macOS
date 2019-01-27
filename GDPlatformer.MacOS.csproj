@@ -77,6 +77,7 @@
     <Compile Include="Character\Base\Enemy.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Character\Enemies\Bee.cs" />
+    <Compile Include="Gameplay\Items\Prop.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />

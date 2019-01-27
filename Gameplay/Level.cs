@@ -24,7 +24,16 @@ namespace GDPlatformer.Gameplay
       new List<int>{1,1,1,1,1,1,6,0,0,7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 }
     };
 
+    private List<List<int>> _prop = new List<List<int>>() {
+      new List<int>{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+      new List<int>{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+      new List<int>{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+      new List<int>{0,0,7,8,0,0,0,0,0,0,0,0,0,6,0,0,1,0,0,5,0,0,2,0,0,0,3,0,0,4,0,0 },
+      new List<int>{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
+    };
+
     private Block[,] _blocks;
+    private Prop[,] _props;
     #endregion
 
     #region Game Methods
@@ -32,12 +41,15 @@ namespace GDPlatformer.Gameplay
     {
       LoadTextures(content);
       GenerateLevel();
+      GenerateProps();
     }
 
     public void Draw(SpriteBatch spriteBatch)
     {
+
       DrawBackground(spriteBatch, 5);
       DrawBlocks(spriteBatch);
+      DrawProps(spriteBatch);
     }
     #endregion
 
@@ -46,6 +58,7 @@ namespace GDPlatformer.Gameplay
     {
       texture = content.Load<Texture2D>("Items/grass_blocks");
       background = content.Load<Texture2D>("Background/blue");
+      levelDecorators = content.Load<Texture2D>("Items/props");
     }
     private void GenerateLevel()
     {
@@ -90,6 +103,54 @@ namespace GDPlatformer.Gameplay
         }
       }
     }
+    private void GenerateProps()
+    {
+      float height = ScreenManager.Instance.Dimensions.Y;
+      _props = new Prop[_prop.Count, _prop[_prop.Count - 1].Count];
+      for (int x = 0; x < _prop.Count; x++)
+      {
+        for (int y = 0; y < _prop[x].Count; y++)
+        {
+          int v = (int)height - (_prop.Count - x) * 70;
+          int h = y * 70 - 70;
+          switch (_prop[x][y])
+          {
+            // Grass
+            case 1:
+              _props[x, y] = new Prop(levelDecorators, new Vector2(h, v), new Vector2(384, 640));
+              break;
+            // Stone
+            case 2:
+              _props[x, y] = new Prop(levelDecorators, new Vector2(h, v), new Vector2(256, 640));
+              break;
+            // Cactus
+            case 3:
+              _props[x, y] = new Prop(levelDecorators, new Vector2(h, v), new Vector2(384, 1664));
+              break;
+            // Arrow Right
+            case 4:
+              _props[x, y] = new Prop(levelDecorators, new Vector2(h, v), new Vector2(256, 128));
+              break;
+            // Bush
+            case 5:
+              _props[x, y] = new Prop(levelDecorators, new Vector2(h, v), new Vector2(384, 1792));
+              break;
+            // Mushroom
+            case 6:
+              _props[x, y] = new Prop(levelDecorators, new Vector2(h, v), new Vector2(256, 896));
+              break;
+            // Fence
+            case 7:
+              _props[x, y] = new Prop(levelDecorators, new Vector2(h, v), new Vector2(384, 896));
+              break;
+            // Fence Broken
+            case 8:
+              _props[x, y] = new Prop(levelDecorators, new Vector2(h, v), new Vector2(384, 768));
+              break;
+          }
+        }
+      }
+    }
     #endregion
 
     #region Draw Methods
@@ -108,6 +169,17 @@ namespace GDPlatformer.Gameplay
         {
           if (_blocks[x, y] != null)
             _blocks[x, y].Draw(spriteBatch);
+        }
+      }
+    }
+    private void DrawProps(SpriteBatch spriteBatch)
+    {
+      for (int x = 0; x < _prop.Count; x++)
+      {
+        for (int y = 0; y < _prop[x].Count; y++)
+        {
+          if (_props[x, y] != null)
+            _props[x, y].Draw(spriteBatch);
         }
       }
     }
