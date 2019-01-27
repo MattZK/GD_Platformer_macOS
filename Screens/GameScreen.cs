@@ -30,9 +30,11 @@ namespace GDPlatformer.Screens
       hud.LoadContent();
       Player = new Player(new Vector2(100, 100));
       Player.LoadContent();
-      enemies = new List<Enemy>();
-      enemies.Add(new Bee(new Vector2(400, 430)));
-      enemies.Add(new Bee(new Vector2(80, 430)));
+      enemies = new List<Enemy>
+      {
+        new Bee(new Vector2(400, 430)),
+        new Bee(new Vector2(80, 430))
+      };
       for (int i = 0; i < enemies.Count; i++)
       {
         enemies[i].LoadContent();
@@ -56,6 +58,7 @@ namespace GDPlatformer.Screens
       base.Update(gameTime);
       Player.Update(gameTime);
       hud.UpdateHealth(Player.GetHealth());
+      hud.UpdateScore(Player.GetScore());
       hud.Update(gameTime);
       for (int i = 0; i < enemies.Count; i++)
       {

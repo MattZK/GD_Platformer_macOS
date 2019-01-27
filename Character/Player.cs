@@ -23,7 +23,7 @@ namespace GDPlatformer.Character
     public new Vector2 Position;
     public new readonly Vector2 Dimensions = new Vector2(70, 86);
     private readonly float speed = 300f;
-    private readonly float gravity = 2f;
+    private readonly float gravity = 1.9f;
     private Vector2 velocity = new Vector2(0f, 0f);
     private int health = 3;
     private int score = 0;
@@ -241,7 +241,7 @@ namespace GDPlatformer.Character
     {
       return health;
     }
-    public int GetPoints()
+    public int GetScore()
     {
       return score;
     }
