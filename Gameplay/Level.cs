@@ -51,6 +51,7 @@ namespace GDPlatformer.Gameplay
       GenerateProps();
       GenerateCoins();
     }
+
     public void Draw(SpriteBatch spriteBatch)
     {
       DrawBackground(spriteBatch, 5);

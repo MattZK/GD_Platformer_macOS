@@ -7,6 +7,7 @@ using GDPlatformer.Managers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
+using GDPlatformer.Gameplay.Items;
 
 namespace GDPlatformer.Character
 {
@@ -25,6 +26,7 @@ namespace GDPlatformer.Character
     private readonly float gravity = 2f;
     private Vector2 velocity = new Vector2(0f, 0f);
     private int health = 3;
+    private int score = 0;
 
     // Movement
     private bool allowLeftMovement;
@@ -73,6 +75,8 @@ namespace GDPlatformer.Character
       if (!isHit)
         CheckEnemyCollisions();
 
+      CheckCoinCollisions();
+
       ApplyHorizontalMovement(gameTime);
       ApplyVerticalMovement(gameTime);
 
@@ -84,10 +88,9 @@ namespace GDPlatformer.Character
     public override void Draw(SpriteBatch spriteBatch)
     {
       base.Draw(spriteBatch);
-      if (!isGoingLeft)
-        spriteBatch.Draw(playerTexture, new Rectangle((int)Position.X, (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y), currentAnimation.CurrentFrame.SourceRectangle, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 0f);
-      else
-        spriteBatch.Draw(playerTexture, new Rectangle((int)Position.X, (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y), currentAnimation.CurrentFrame.SourceRectangle, Color.White, 0f, Vector2.Zero, SpriteEffects.FlipHorizontally, 0f);
+      SpriteEffects spriteEffect;
+      if (isGoingLeft) spriteEffect = SpriteEffects.FlipHorizontally; else spriteEffect = SpriteEffects.None;
+      spriteBatch.Draw(playerTexture, new Rectangle((int)Position.X, (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y), currentAnimation.CurrentFrame.SourceRectangle, Color.White, 0f, Vector2.Zero, spriteEffect, 0f);
     }
     #endregion
 
@@ -148,17 +151,32 @@ namespace GDPlatformer.Character
         List<Enemy> enemyColliders = CollisionManager.Instance.GetEnemyColliders();
 
         // Check Collision Boxes against Player
-        foreach (Enemy collider in enemyColliders)
+        foreach (Enemy enemy in enemyColliders)
         {
-          if (CheckCollision(new Rectangle((int)Position.X, (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y), collider.GetCollisionRectangle()))
+          if (CheckCollision(new Rectangle((int)Position.X, (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y), enemy.GetCollisionRectangle()))
           {
             if (health != 1)
               health--;
             else
               Die();
-            collider.Hit();
+            enemy.Hit();
             isHit = true;
           }
+        }
+      }
+    }
+    private void CheckCoinCollisions()
+    {
+      List<Coin> coinColliders = CollisionManager.Instance.GetCoinColliders();
+
+      foreach (Coin coin in coinColliders)
+      {
+        if(CheckCollision(new Rectangle((int)Position.X, (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y), coin.GetCollisionRectangle()))
+        {
+          score += coin.GetValue();
+          CollisionManager.Instance.RemoveCoinCollider(coin);
+          coin.Collect();
+          return;
         }
       }
     }
@@ -222,6 +240,10 @@ namespace GDPlatformer.Character
     public int GetHealth()
     {
       return health;
+    }
+    public int GetPoints()
+    {
+      return score;
     }
     private void Die()
     {
