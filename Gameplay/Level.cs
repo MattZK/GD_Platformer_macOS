@@ -13,7 +13,8 @@ namespace GDPlatformer.Gameplay
     #region Properties
     public Texture2D texture;
     public Texture2D background;
-    public Texture2D levelDecorators;
+    public Texture2D propsTexture;
+    public Texture2D collectablesTexture;
 
     private List<List<int>> _level = new List<List<int>>() {
       new List<int>{9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,9 },
@@ -32,8 +33,14 @@ namespace GDPlatformer.Gameplay
       new List<int>{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
     };
 
+    private List<List<int>> _coin = new List<List<int>>() {
+      new List<int>{0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,2,0,0,0,3,0,2,0,0,0,0,0,0,0,0,0 },
+      new List<int>{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
+    };
+
     private Block[,] _blocks;
     private Prop[,] _props;
+    private Coin[,] _coins;
     #endregion
 
     #region Game Methods
@@ -42,14 +49,14 @@ namespace GDPlatformer.Gameplay
       LoadTextures(content);
       GenerateLevel();
       GenerateProps();
+      GenerateCoins();
     }
-
     public void Draw(SpriteBatch spriteBatch)
     {
-
       DrawBackground(spriteBatch, 5);
       DrawBlocks(spriteBatch);
       DrawProps(spriteBatch);
+      DrawCoins(spriteBatch);
     }
     #endregion
 
@@ -58,7 +65,8 @@ namespace GDPlatformer.Gameplay
     {
       texture = content.Load<Texture2D>("Items/grass_blocks");
       background = content.Load<Texture2D>("Background/blue");
-      levelDecorators = content.Load<Texture2D>("Items/props");
+      propsTexture = content.Load<Texture2D>("Items/props");
+      collectablesTexture = content.Load<Texture2D>("Items/collectables");
     }
     private void GenerateLevel()
     {
@@ -117,37 +125,67 @@ namespace GDPlatformer.Gameplay
           {
             // Grass
             case 1:
-              _props[x, y] = new Prop(levelDecorators, new Vector2(h, v), new Vector2(384, 640));
+              _props[x, y] = new Prop(propsTexture, new Vector2(h, v), new Vector2(384, 640));
               break;
             // Stone
             case 2:
-              _props[x, y] = new Prop(levelDecorators, new Vector2(h, v), new Vector2(256, 640));
+              _props[x, y] = new Prop(propsTexture, new Vector2(h, v), new Vector2(256, 640));
               break;
             // Cactus
             case 3:
-              _props[x, y] = new Prop(levelDecorators, new Vector2(h, v), new Vector2(384, 1664));
+              _props[x, y] = new Prop(propsTexture, new Vector2(h, v), new Vector2(384, 1664));
               break;
             // Arrow Right
             case 4:
-              _props[x, y] = new Prop(levelDecorators, new Vector2(h, v), new Vector2(256, 128));
+              _props[x, y] = new Prop(propsTexture, new Vector2(h, v), new Vector2(256, 128));
               break;
             // Bush
             case 5:
-              _props[x, y] = new Prop(levelDecorators, new Vector2(h, v), new Vector2(384, 1792));
+              _props[x, y] = new Prop(propsTexture, new Vector2(h, v), new Vector2(384, 1792));
               break;
             // Mushroom
             case 6:
-              _props[x, y] = new Prop(levelDecorators, new Vector2(h, v), new Vector2(256, 896));
+              _props[x, y] = new Prop(propsTexture, new Vector2(h, v), new Vector2(256, 896));
               break;
             // Fence
             case 7:
-              _props[x, y] = new Prop(levelDecorators, new Vector2(h, v), new Vector2(384, 896));
+              _props[x, y] = new Prop(propsTexture, new Vector2(h, v), new Vector2(384, 896));
               break;
             // Fence Broken
             case 8:
-              _props[x, y] = new Prop(levelDecorators, new Vector2(h, v), new Vector2(384, 768));
+              _props[x, y] = new Prop(propsTexture, new Vector2(h, v), new Vector2(384, 768));
               break;
           }
+        }
+      }
+    }
+    private void GenerateCoins()
+    {
+      float height = ScreenManager.Instance.Dimensions.Y;
+      _coins = new Coin[_coin.Count, _coin[_coin.Count - 1].Count];
+      for (int x = 0; x < _coin.Count; x++)
+      {
+        for (int y = 0; y < _coin[x].Count; y++)
+        {
+          int v = (int)height - (_coin.Count - x) * 70;
+          int h = y * 70 - 70;
+          switch (_coin[x][y])
+          {
+            // Bronze
+            case 1:
+              _coins[x, y] = new Coin(collectablesTexture, new Vector2(h, v), new Vector2(384, 0), 1);
+              break;
+            // Bronze
+            case 2:
+              _coins[x, y] = new Coin(collectablesTexture, new Vector2(h, v), new Vector2(256, 256), 3);
+              break;
+            // Bronze
+            case 3:
+              _coins[x, y] = new Coin(collectablesTexture, new Vector2(h, v), new Vector2(640, 384), 5);
+              break;
+          }
+          if (_coin[x][y] != 0)
+            CollisionManager.Instance.AddCoinCollider(_coins[x, y]);
         }
       }
     }
@@ -180,6 +218,17 @@ namespace GDPlatformer.Gameplay
         {
           if (_props[x, y] != null)
             _props[x, y].Draw(spriteBatch);
+        }
+      }
+    }
+    private void DrawCoins(SpriteBatch spriteBatch)
+    {
+      for (int x = 0; x < _coin.Count; x++)
+      {
+        for (int y = 0; y < _coin[x].Count; y++)
+        {
+          if (_coins[x, y] != null)
+            _coins[x, y].Draw(spriteBatch);
         }
       }
     }

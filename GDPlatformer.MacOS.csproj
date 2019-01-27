@@ -78,6 +78,7 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Character\Enemies\Bee.cs" />
     <Compile Include="Gameplay\Items\Prop.cs" />
+    <Compile Include="Gameplay\Items\Coin.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
