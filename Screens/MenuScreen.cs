@@ -16,6 +16,7 @@ namespace GDPlatformer.Screens
     private int selected = 0;
     bool delayOver = true;
     double delay;
+    bool allowStartGame;
     #endregion
 
     #region Game Methods
@@ -42,7 +43,8 @@ namespace GDPlatformer.Screens
 
       if (keyboardState.IsKeyDown(Keys.Enter))
       {
-
+        if (selected == 0)
+          allowStartGame = true;
       }
 
       Console.WriteLine(selected);
@@ -68,6 +70,8 @@ namespace GDPlatformer.Screens
       if (selected == 1)
         color = Color.Red;
       spriteBatch.DrawString(arialFont, "Exit", position, color, 0, origin, 1f, SpriteEffects.None, 0);
+
+      if (allowStartGame) StartGame();
     }
     #endregion
     private void checkDelay(GameTime gameTime)
