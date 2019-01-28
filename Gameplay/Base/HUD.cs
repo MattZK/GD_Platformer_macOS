@@ -41,22 +41,26 @@ namespace GDPlatformer.Gameplay.Base
 
     private void DrawHearts(SpriteBatch spriteBatch, int amount, Vector2 origin) {
       if (amount >= 1)
-        spriteBatch.Draw(hudTexture, new Vector2(origin.X - 48, origin.Y + 16), new Rectangle(0, 256, 128, 128), Color.White, 0f, Vector2.Zero, 0.25f, SpriteEffects.None, 0f);
+        spriteBatch.Draw(hudTexture, new Vector2(origin.X - 48, origin.Y + 24), new Rectangle(0, 256, 128, 128), Color.White, 0f, Vector2.Zero, 0.25f, SpriteEffects.None, 0f);
       if (amount >= 2)
-        spriteBatch.Draw(hudTexture, new Vector2(origin.X - 16, origin.Y + 16), new Rectangle(0, 256, 128, 128), Color.White, 0f, Vector2.Zero, 0.25f, SpriteEffects.None, 0f);
+        spriteBatch.Draw(hudTexture, new Vector2(origin.X - 16, origin.Y + 24), new Rectangle(0, 256, 128, 128), Color.White, 0f, Vector2.Zero, 0.25f, SpriteEffects.None, 0f);
       if (amount >= 3)
-        spriteBatch.Draw(hudTexture, new Vector2(origin.X + 16, origin.Y + 16), new Rectangle(0, 256, 128, 128), Color.White, 0f, Vector2.Zero, 0.25f, SpriteEffects.None, 0f);
+        spriteBatch.Draw(hudTexture, new Vector2(origin.X + 16, origin.Y + 24), new Rectangle(0, 256, 128, 128), Color.White, 0f, Vector2.Zero, 0.25f, SpriteEffects.None, 0f);
     }
 
     private void DrawScore(SpriteBatch spriteBatch, int amount, Vector2 origin)
     {
-      spriteBatch.DrawString(font, amount.ToString(), new Vector2(origin.X - 48, origin.Y + 4), Color.Black);
+
+      Vector2 dimensions = font.MeasureString(score.ToString());
+      spriteBatch.DrawString(font, amount.ToString(), new Vector2(origin.X - dimensions.X / 4, origin.Y + 8), Color.Black, 0f, Vector2.Zero, .5f, SpriteEffects.None, 0f);
     }
 
     public void ShowGameOver(SpriteBatch spriteBatch)
     {
       spriteBatch.Draw(deadOverlayTexture, new Vector2(0, 0), Color.White);
-      spriteBatch.DrawString(font, "You Died", new Vector2(60, 60), Color.White);
+      Vector2 position = new Vector2((ScreenManager.Instance.Dimensions.X / 2), (ScreenManager.Instance.Dimensions.Y / 2));
+      Vector2 origin = new Vector2(font.MeasureString("You Died!").X / 2, font.MeasureString("You Died!").Y / 2);
+      spriteBatch.DrawString(font, "You Died!", position, Color.White, 0, origin, 1f, SpriteEffects.None, 0);
     }
 
   }

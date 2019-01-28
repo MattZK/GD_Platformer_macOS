@@ -17,7 +17,7 @@ namespace GDPlatformer.Screens
     public override void LoadContent()
     {
       base.LoadContent();
-      arialFont = content.Load<SpriteFont>("Fonts/Arial");
+      arialFont = content.Load<SpriteFont>("Fonts/ArialBig");
     }
 
     public override void UnloadContent()
@@ -34,7 +34,7 @@ namespace GDPlatformer.Screens
     {
       Vector2 position = new Vector2((ScreenManager.Instance.Dimensions.X / 2), (ScreenManager.Instance.Dimensions.Y / 2));
       Vector2 origin = new Vector2((arialFont.MeasureString("Menu Screen").X / 2), (arialFont.MeasureString("Menu Screen").Y / 2));
-      spriteBatch.DrawString(arialFont, "Menu Screen", position, Color.White, 0, origin, 4f, SpriteEffects.None, 0);
+      spriteBatch.DrawString(arialFont, "Menu Screen", position, Color.White, 0, origin, 2f, SpriteEffects.None, 0);
       base.Draw(spriteBatch);
 
       KeyboardState keyboardState = Keyboard.GetState();
@@ -42,7 +42,7 @@ namespace GDPlatformer.Screens
       if (keyboardState.IsKeyDown(Keys.Enter))
       {
         ScreenManager.Instance.CurrentScreen.UnloadContent();
-        ScreenManager.Instance.CurrentScreen = new GameScreen();
+        ScreenManager.Instance.CurrentScreen = new GameScreen(0);
         ScreenManager.Instance.CurrentScreen.LoadContent();
       }
     }

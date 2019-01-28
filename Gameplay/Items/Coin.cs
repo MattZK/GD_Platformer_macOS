@@ -12,6 +12,8 @@ namespace GDPlatformer.Gameplay.Items
     private readonly Vector2 _position;
     private readonly int _value;
     private bool isCollected;
+    private float offset;
+    private bool isGoingUp;
 
     public Coin(Texture2D texture, Vector2 pos, Vector2 frame, int value)
     {
@@ -23,8 +25,18 @@ namespace GDPlatformer.Gameplay.Items
 
     public void Draw(SpriteBatch spriteBatch)
     {
-      if(!isCollected)
-        spriteBatch.Draw(_texture, _position, new Rectangle((int)_frame.X, (int)_frame.Y, 128, 128), Color.White, 0f, Vector2.Zero, 0.546f, SpriteEffects.None, 0f);
+      if (offset < 0)
+        isGoingUp = true;
+      else if (offset > 10)
+        isGoingUp = false;
+
+      if(isGoingUp)
+        offset += .03f;
+      else
+        offset -= .03f;
+
+      if (!isCollected)
+        spriteBatch.Draw(_texture, new Vector2(_position.X, _position.Y - offset), new Rectangle((int)_frame.X, (int)_frame.Y, 128, 128), Color.White, 0f, Vector2.Zero, 0.546f, SpriteEffects.None, 0f);
     }
 
     public int GetValue()

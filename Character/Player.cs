@@ -272,7 +272,7 @@ namespace GDPlatformer.Character
     {
       if (keyboardState.IsKeyDown(Keys.Enter)) {
         ScreenManager.Instance.CurrentScreen.UnloadContent();
-        ScreenManager.Instance.CurrentScreen = new GameScreen();
+        ScreenManager.Instance.CurrentScreen = new GameScreen(0);
         ScreenManager.Instance.CurrentScreen.LoadContent();
       }
     }

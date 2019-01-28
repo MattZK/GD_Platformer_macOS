@@ -79,6 +79,7 @@
     <Compile Include="Character\Enemies\Bee.cs" />
     <Compile Include="Gameplay\Items\Prop.cs" />
     <Compile Include="Gameplay\Items\Coin.cs" />
+    <Compile Include="Gameplay\Base\LevelCreator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />

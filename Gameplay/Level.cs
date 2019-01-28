@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using GDPlatformer.Gameplay.Base;
 using GDPlatformer.Gameplay.Items;
 using GDPlatformer.Managers;
 using Microsoft.Xna.Framework;
@@ -16,33 +17,28 @@ namespace GDPlatformer.Gameplay
     public Texture2D propsTexture;
     public Texture2D collectablesTexture;
 
-    private List<List<int>> _level = new List<List<int>>() {
-      new List<int>{9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,9 },
-      new List<int>{9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,3,0,0,0,0,0,0,0,0,0,0,0,0,9 },
-      new List<int>{9,0,0,2,3,0,0,0,0,0,0,2,3,0,0,0,0,0,0,0,0,0,2,1,3,0,0,0,0,0,0,9 },
-      new List<int>{9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,9 },
-      new List<int>{9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,9 },
-      new List<int>{1,1,1,1,1,1,6,0,0,7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 }
-    };
+    private int levelID;
 
-    private List<List<int>> _prop = new List<List<int>>() {
-      new List<int>{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-      new List<int>{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-      new List<int>{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-      new List<int>{0,0,7,8,0,0,0,0,0,0,0,0,0,6,0,0,1,0,0,5,0,0,2,0,0,0,3,0,0,4,0,0 },
-      new List<int>{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
-    };
+    private LevelCreator levelCreator;
 
-    private List<List<int>> _coin = new List<List<int>>() {
-      new List<int>{0,0,0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-      new List<int>{0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,2,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0 },
-      new List<int>{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
-    };
+    private List<List<int>> _level;
+
+    private List<List<int>> _prop;
+
+    private List<List<int>> _coin;
 
     private Block[,] _blocks;
     private Prop[,] _props;
     private Coin[,] _coins;
     #endregion
+
+    public Level(int ID) {
+      levelID = ID;
+      levelCreator = new LevelCreator(ID);
+      _level = levelCreator.GetLevel();
+      _prop = levelCreator.GetProps();
+      _coin = levelCreator.GetCoins();
+    }
 
     #region Game Methods
     public void LoadContent(ContentManager content)
