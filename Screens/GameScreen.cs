@@ -39,7 +39,8 @@ namespace GDPlatformer.Screens
       enemies = new List<Enemy>
       {
         new Bee(new Vector2(400, 430)),
-        new Bee(new Vector2(80, 430))
+        new Bee(new Vector2(80, 430)),
+        new Bee(new Vector2(600, 430)),
       };
       for (int i = 0; i < enemies.Count; i++)
       {
