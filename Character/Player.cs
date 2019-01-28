@@ -28,6 +28,7 @@ namespace GDPlatformer.Character
     private Vector2 velocity = new Vector2(0f, 0f);
     private int health = 3;
     private int score;
+    private double hitAnimationTimer;
 
     // Movement
     private bool allowLeftMovement;
@@ -40,7 +41,7 @@ namespace GDPlatformer.Character
     private bool isGoingLeft;
     private bool isHit;
     private bool isMoving;
-    private double hitAnimationTimer;
+    private bool levelEnd;
     // Debug
     private readonly bool DEBUG = false;
     #endregion
@@ -89,6 +90,8 @@ namespace GDPlatformer.Character
 
         CheckMapBounds();
       }
+
+      levelEnd |= CheckEndLevelCollision();
     }
 
     public override void Draw(SpriteBatch spriteBatch)
@@ -98,6 +101,7 @@ namespace GDPlatformer.Character
       if (isGoingLeft) spriteEffect = SpriteEffects.FlipHorizontally; else spriteEffect = SpriteEffects.None;
       spriteBatch.Draw(playerTexture, new Rectangle((int)Position.X, (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y), currentAnimation.CurrentFrame.SourceRectangle, Color.White, 0f, Vector2.Zero, spriteEffect, 0f);
       if(health == 0) CheckLevelReset();
+      if (levelEnd) GoToNextLevel();
     }
     #endregion
 
@@ -117,6 +121,15 @@ namespace GDPlatformer.Character
     #endregion
 
     #region Collision Methods
+    private bool CheckEndLevelCollision()
+    {
+      Rectangle door = new Rectangle(2020, 540, 100, 100);
+      if (CheckCollision(new Rectangle((int)Position.X, (int)Position.Y, (int)Dimensions.X, (int)Dimensions.Y), door))
+      {
+        return true;
+      }
+      return false;
+    }
     private bool CheckCollision(Rectangle boundBox, Rectangle colliderBox)
     {
       if (boundBox.Intersects(colliderBox))
@@ -275,6 +288,12 @@ namespace GDPlatformer.Character
         ScreenManager.Instance.CurrentScreen = new GameScreen(0);
         ScreenManager.Instance.CurrentScreen.LoadContent();
       }
+    }
+    private void GoToNextLevel()
+    {
+      ScreenManager.Instance.CurrentScreen.UnloadContent();
+      ScreenManager.Instance.CurrentScreen = new GameScreen(1);
+      ScreenManager.Instance.CurrentScreen.LoadContent();
     }
     private void UpdateAnimation(GameTime gameTime)
     {
