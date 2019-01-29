@@ -77,7 +77,6 @@ namespace GDPlatformer.MacOS
 
       base.Update(gameTime);
       ScreenManager.Instance.Update(gameTime);
-      InputManager.Instance.Update();
       // TODO: Fix Preformance
       if (ScreenManager.Instance.CurrentScreen is GameScreen)
       {
