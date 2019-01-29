@@ -7,6 +7,7 @@ namespace GDPlatformer.Managers.Base
 {
   public abstract class Screen
   {
+    public bool isGameOver;
     protected ContentManager content;
 
     public virtual void LoadContent()

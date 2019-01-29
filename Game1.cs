@@ -85,6 +85,7 @@ namespace GDPlatformer.MacOS
         camera.SetReference(gameScreen.Player);
       }
       currentViewMatrix = camera.GetViewMatrix();
+      if (ScreenManager.Instance.isGameOver) Exit();
     }
 
     /// <summary>

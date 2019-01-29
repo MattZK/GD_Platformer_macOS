@@ -45,6 +45,8 @@ namespace GDPlatformer.Screens
       {
         if (selected == 0)
           allowStartGame = true;
+        else
+          isGameOver = true;
       }
 
       Console.WriteLine(selected);
@@ -52,24 +54,7 @@ namespace GDPlatformer.Screens
 
     public override void Draw(SpriteBatch spriteBatch)
     {
-      base.Draw(spriteBatch);
-      Vector2 position = new Vector2(ScreenManager.Instance.Dimensions.X / 2, ScreenManager.Instance.Dimensions.Y / 2);
-      Vector2 origin = new Vector2(arialFont.MeasureString("Very Fun Game").X / 2, arialFont.MeasureString("Very Fun Game").Y / 2 + 110);
-      spriteBatch.DrawString(arialFont, "Very Fun Game", position, Color.Black, 0, origin, 2f, SpriteEffects.None, 0);
-
-      position = new Vector2(ScreenManager.Instance.Dimensions.X / 2, ScreenManager.Instance.Dimensions.Y / 2);
-      origin = new Vector2(arialFont.MeasureString("Start").X / 2, arialFont.MeasureString("Start").Y / 2 );
-      Color color = Color.White;
-      if (selected == 0)
-        color = Color.Red;
-      spriteBatch.DrawString(arialFont, "Start", position, color, 0, origin, 1f, SpriteEffects.None, 0);
-
-      position = new Vector2(ScreenManager.Instance.Dimensions.X / 2, ScreenManager.Instance.Dimensions.Y / 2 + 40);
-      origin = new Vector2(arialFont.MeasureString("Exit").X / 2, arialFont.MeasureString("Exit").Y / 2);
-      color = Color.White;
-      if (selected == 1)
-        color = Color.Red;
-      spriteBatch.DrawString(arialFont, "Exit", position, color, 0, origin, 1f, SpriteEffects.None, 0);
+      DrawText(spriteBatch);
 
       if (allowStartGame) StartGame();
     }
@@ -77,7 +62,7 @@ namespace GDPlatformer.Screens
     private void checkDelay(GameTime gameTime)
     {
       delay += gameTime.ElapsedGameTime.TotalMilliseconds;
-      if (delay >= 1000)
+      if (delay >= 500)
         delayOver = true;
     }
     private void resetDelay()
@@ -101,6 +86,28 @@ namespace GDPlatformer.Screens
       ScreenManager.Instance.CurrentScreen.UnloadContent();
       ScreenManager.Instance.CurrentScreen = new GameScreen(0);
       ScreenManager.Instance.CurrentScreen.LoadContent();
+    }
+
+    private void DrawText(SpriteBatch spriteBatch)
+    {
+      base.Draw(spriteBatch);
+      Vector2 position = new Vector2(ScreenManager.Instance.Dimensions.X / 2, ScreenManager.Instance.Dimensions.Y / 2);
+      Vector2 origin = new Vector2(arialFont.MeasureString("Very Fun Game").X / 2, arialFont.MeasureString("Very Fun Game").Y / 2 + 110);
+      spriteBatch.DrawString(arialFont, "Very Fun Game", position, Color.Black, 0, origin, 2f, SpriteEffects.None, 0);
+
+      position = new Vector2(ScreenManager.Instance.Dimensions.X / 2, ScreenManager.Instance.Dimensions.Y / 2);
+      origin = new Vector2(arialFont.MeasureString("Start").X / 2, arialFont.MeasureString("Start").Y / 2);
+      Color color = Color.White;
+      if (selected == 0)
+        color = Color.Red;
+      spriteBatch.DrawString(arialFont, "Start", position, color, 0, origin, 1f, SpriteEffects.None, 0);
+
+      position = new Vector2(ScreenManager.Instance.Dimensions.X / 2, ScreenManager.Instance.Dimensions.Y / 2 + 40);
+      origin = new Vector2(arialFont.MeasureString("Exit").X / 2, arialFont.MeasureString("Exit").Y / 2);
+      color = Color.White;
+      if (selected == 1)
+        color = Color.Red;
+      spriteBatch.DrawString(arialFont, "Exit", position, color, 0, origin, 1f, SpriteEffects.None, 0);
     }
   }
 }
