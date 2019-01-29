@@ -29,16 +29,19 @@ namespace GDPlatformer.Gameplay.Base
       DrawScore(spriteBatch, score, centerOrigin);
     }
 
+    // Update the health
     public void UpdateHealth(int amount)
     {
       health = amount;
     }
 
+    // Update the score
     public void UpdateScore(int amount)
     {
       score = amount;
     }
 
+    // Draw the Hearts
     private void DrawHearts(SpriteBatch spriteBatch, int amount, Vector2 origin) {
       if (amount >= 1)
         spriteBatch.Draw(hudTexture, new Vector2(origin.X - 48, origin.Y + 24), new Rectangle(0, 256, 128, 128), Color.White, 0f, Vector2.Zero, 0.25f, SpriteEffects.None, 0f);
@@ -48,6 +51,7 @@ namespace GDPlatformer.Gameplay.Base
         spriteBatch.Draw(hudTexture, new Vector2(origin.X + 16, origin.Y + 24), new Rectangle(0, 256, 128, 128), Color.White, 0f, Vector2.Zero, 0.25f, SpriteEffects.None, 0f);
     }
 
+    // Draw the Score
     private void DrawScore(SpriteBatch spriteBatch, int amount, Vector2 origin)
     {
 
@@ -55,6 +59,7 @@ namespace GDPlatformer.Gameplay.Base
       spriteBatch.DrawString(font, amount.ToString(), new Vector2(origin.X - dimensions.X / 4, origin.Y + 8), Color.Black, 0f, Vector2.Zero, .5f, SpriteEffects.None, 0f);
     }
 
+    // Show a Game Over Overlay
     public void ShowGameOver(SpriteBatch spriteBatch)
     {
       spriteBatch.Draw(deadOverlayTexture, new Vector2(0, 0), Color.White);

@@ -59,6 +59,7 @@ namespace GDPlatformer.Gameplay
     #endregion
 
     #region Generation & Loading Methods
+    // Load All Textures
     private void LoadTextures(ContentManager content)
     {
       texture = content.Load<Texture2D>("Items/grass_blocks");
@@ -66,6 +67,7 @@ namespace GDPlatformer.Gameplay
       propsTexture = content.Load<Texture2D>("Items/props");
       collectablesTexture = content.Load<Texture2D>("Items/collectables");
     }
+    // Generate Level Blok Objects
     private void GenerateLevel()
     {
       float height = ScreenManager.Instance.Dimensions.Y;
@@ -109,6 +111,7 @@ namespace GDPlatformer.Gameplay
         }
       }
     }
+    // Generate Prop Objects
     private void GenerateProps()
     {
       float height = ScreenManager.Instance.Dimensions.Y;
@@ -157,6 +160,7 @@ namespace GDPlatformer.Gameplay
         }
       }
     }
+    // Generate Coin Objects
     private void GenerateCoins()
     {
       float height = ScreenManager.Instance.Dimensions.Y;

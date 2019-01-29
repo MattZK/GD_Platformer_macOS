@@ -121,6 +121,7 @@ namespace GDPlatformer.Character
     #endregion
 
     #region Collision Methods
+    // Check for Game Over
     private bool CheckEndLevelCollision()
     {
       Rectangle door = new Rectangle(2020, 540, 100, 100);
@@ -130,6 +131,7 @@ namespace GDPlatformer.Character
       }
       return false;
     }
+    // Check collision between two rectamgles
     private bool CheckCollision(Rectangle boundBox, Rectangle colliderBox)
     {
       if (boundBox.Intersects(colliderBox))
@@ -138,6 +140,7 @@ namespace GDPlatformer.Character
       }
       return false;
     }
+    // Check Level Collision
     private void CheckMoveCollisions()
     {
       // Generated Collision Boxes
@@ -164,6 +167,7 @@ namespace GDPlatformer.Character
         allowUpMovement &= !CheckCollision(moveUpCollisionBox, collider.GetCollisionRectangle());
       }
     }
+    // Check for Enemy Collision
     private void CheckEnemyCollisions()
     {
       if (!isHit)
@@ -182,6 +186,7 @@ namespace GDPlatformer.Character
         }
       }
     }
+    // Check for coin collision
     private void CheckCoinCollisions()
     {
       List<Coin> coinColliders = CollisionManager.Instance.GetCoinColliders();
@@ -200,12 +205,14 @@ namespace GDPlatformer.Character
     #endregion
 
     #region Movement Methods
+    // Precalculate velocity for collision calculations
     private void CalculateVelocity()
     {
       if (isInAir)
         velocity.Y += gravity * elapsedGameTimeSeconds;
       velocity.X = speed * elapsedGameTimeSeconds;
     }
+    // Apply Horizontal Movement to the players position
     private void ApplyHorizontalMovement(GameTime gameTime)
     {
       isMoving = false;
@@ -222,6 +229,7 @@ namespace GDPlatformer.Character
         isGoingLeft = false;
       }
     }
+    // Apply Vertical Movement to the players position
     private void ApplyVerticalMovement(GameTime gameTime)
     {
       // isInAir
@@ -244,6 +252,7 @@ namespace GDPlatformer.Character
         Position.Y += 1;
       }
     }
+    // Apply Gravity to the players position
     private void ApplyGravity()
     {
       if (isInAir)
@@ -251,6 +260,7 @@ namespace GDPlatformer.Character
       else
         velocity.Y = 0f;
     }
+    // Check if player fell out of the map. If so, kill him.
     private void CheckMapBounds()
     {
       if (Position.Y > 800) Die();
@@ -316,6 +326,7 @@ namespace GDPlatformer.Character
     #endregion
 
     #region Debug Methods
+    // Show an FPS Counter if in DEBUG
     private void ShowFPSCounter(GameTime gameTime, bool force = false)
     {
       if(DEBUG || force)
